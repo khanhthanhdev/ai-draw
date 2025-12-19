@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import {
     AlertTriangle,
+    Check,
     MessageSquarePlus,
     PanelRightClose,
     PanelRightOpen,
@@ -16,14 +17,31 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
 import { FaGithub } from "react-icons/fa"
 import { Toaster, toast } from "sonner"
+import {
+    ModelSelector,
+    ModelSelectorContent,
+    ModelSelectorEmpty,
+    ModelSelectorGroup,
+    ModelSelectorInput,
+    ModelSelectorItem,
+    ModelSelectorList,
+    ModelSelectorLogo,
+    ModelSelectorLogoGroup,
+    ModelSelectorName,
+    ModelSelectorSeparator,
+    ModelSelectorTrigger,
+} from "@/components/ai-elements/model-selector"
 import { ButtonWithTooltip } from "@/components/button-with-tooltip"
 import { ChatInput } from "@/components/chat-input"
 import { ResetWarningModal } from "@/components/reset-warning-modal"
 import { SettingsDialog } from "@/components/settings-dialog"
+import { Button } from "@/components/ui/button"
 import { useDiagram } from "@/contexts/diagram-context"
 import { getAIConfig } from "@/lib/ai-config"
 import { findCachedResponse } from "@/lib/cached-responses"
 import { isPdfFile, isTextFile } from "@/lib/pdf-utils"
+import { getModelMultiplier, MODEL_PRICING } from "@/lib/pricing-config"
+import { STORAGE_KEYS } from "@/lib/storage"
 import { type FileData, useFileProcessor } from "@/lib/use-file-processor"
 import { useQuotaManager } from "@/lib/use-quota-manager"
 import { formatXML, isMxCellXmlComplete, wrapWithMxFile } from "@/lib/utils"
@@ -37,6 +55,10 @@ export const STORAGE_DIAGRAM_XML_KEY = "next-ai-draw-io-diagram-xml"
 
 // sessionStorage keys
 const SESSION_STORAGE_INPUT_KEY = "next-ai-draw-io-input"
+
+const MODEL_CHEFS = Array.from(
+    new Set(MODEL_PRICING.map((model) => model.provider)),
+)
 
 // Type for message parts (tool calls and their states)
 interface MessagePart {
@@ -149,6 +171,15 @@ export default function ChatPanel({
     const [tpmLimit, setTpmLimit] = useState(0)
     const [showNewChatDialog, setShowNewChatDialog] = useState(false)
     const [minimalStyle, setMinimalStyle] = useState(false)
+    const [modelSelectorOpen, setModelSelectorOpen] = useState(false)
+    const [selectedModel, setSelectedModel] = useState(() => {
+        if (typeof window === "undefined") return ""
+        return localStorage.getItem(STORAGE_KEYS.aiModel) || ""
+    })
+
+    const selectedModelData = MODEL_PRICING.find(
+        (model) => model.id === selectedModel,
+    )
 
     // Restore input from sessionStorage on mount (when ChatPanel remounts due to key change)
     useEffect(() => {
@@ -170,6 +201,12 @@ export default function ChatPanel({
             })
             .catch(() => setAccessCodeRequired(false))
     }, [])
+
+    useEffect(() => {
+        if (typeof window === "undefined") return
+        if (showSettingsDialog) return
+        setSelectedModel(localStorage.getItem(STORAGE_KEYS.aiModel) || "")
+    }, [showSettingsDialog])
 
     // Quota management using extracted hook
     const quotaManager = useQuotaManager({
@@ -1004,6 +1041,18 @@ Continue from EXACTLY where you stopped.`,
         return true
     }
 
+    const handleModelSelect = (modelId: string) => {
+        if (typeof window !== "undefined") {
+            if (modelId) {
+                localStorage.setItem(STORAGE_KEYS.aiModel, modelId)
+            } else {
+                localStorage.removeItem(STORAGE_KEYS.aiModel)
+            }
+        }
+        setSelectedModel(modelId)
+        setModelSelectorOpen(false)
+    }
+
     // Send chat message with headers and increment quota
     const sendChatMessage = (
         parts: any,
@@ -1017,22 +1066,31 @@ Continue from EXACTLY where you stopped.`,
 
         const config = getAIConfig()
 
+        // Find provider from config (user override) or selected model
+        let provider = config.aiProvider
+        if (!provider && config.aiModel) {
+            const modelInfo = MODEL_PRICING.find((m) => m.id === config.aiModel)
+            if (modelInfo) {
+                provider = modelInfo.provider
+            }
+        }
+
         sendMessage(
             { parts },
             {
                 body: { xml, previousXml, sessionId },
                 headers: {
                     "x-access-code": config.accessCode,
+                    ...(provider && { "x-ai-provider": provider }),
                     ...(config.aiProvider && {
-                        "x-ai-provider": config.aiProvider,
                         ...(config.aiBaseUrl && {
                             "x-ai-base-url": config.aiBaseUrl,
                         }),
                         ...(config.aiApiKey && {
                             "x-ai-api-key": config.aiApiKey,
                         }),
-                        ...(config.aiModel && { "x-ai-model": config.aiModel }),
                     }),
+                    ...(config.aiModel && { "x-ai-model": config.aiModel }),
                     ...(minimalStyle && {
                         "x-minimal-style": "true",
                     }),
@@ -1339,6 +1397,129 @@ Continue from EXACTLY where you stopped.`,
             <footer
                 className={`${isMobile ? "p-2" : "p-4"} border-t border-border/50 bg-card/50`}
             >
+                <div
+                    className={`${
+                        isMobile
+                            ? "mb-2 flex flex-col gap-2"
+                            : "mb-3 flex items-center justify-between gap-4"
+                    }`}
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                            Model
+                        </span>
+                        <div className="h-4 w-px bg-border/70" />
+                        <ModelSelector
+                            open={modelSelectorOpen}
+                            onOpenChange={setModelSelectorOpen}
+                        >
+                            <ModelSelectorTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className={`h-9 ${isMobile ? "w-full" : "min-w-[220px]"} justify-between gap-2 rounded-none border-2 border-border/70 bg-background px-3 text-xs font-semibold tracking-wide shadow-none hover:bg-accent/50`}
+                                >
+                                    {selectedModelData?.provider ? (
+                                        <ModelSelectorLogo
+                                            className="size-4"
+                                            provider={
+                                                selectedModelData.provider
+                                            }
+                                        />
+                                    ) : (
+                                        <div className="size-4 border-2 border-border/70" />
+                                    )}
+                                    <ModelSelectorName className="text-xs font-semibold tracking-wide">
+                                        {selectedModelData?.name ||
+                                            selectedModel ||
+                                            "Server Default"}
+                                    </ModelSelectorName>
+                                </Button>
+                            </ModelSelectorTrigger>
+                            <ModelSelectorContent className="rounded-none border-2 border-border bg-background p-0 shadow-none [&_[data-slot=command]]:rounded-none">
+                                <ModelSelectorInput
+                                    className="rounded-none border-border/70 text-sm"
+                                    placeholder="Search models..."
+                                />
+                                <ModelSelectorList className="max-h-[320px]">
+                                    <ModelSelectorEmpty>
+                                        No models found.
+                                    </ModelSelectorEmpty>
+                                    <ModelSelectorGroup heading="Default">
+                                        <ModelSelectorItem
+                                            className="rounded-none"
+                                            onSelect={() =>
+                                                handleModelSelect("")
+                                            }
+                                            value="server-default"
+                                        >
+                                            <div className="size-3 border-2 border-border/70" />
+                                            <ModelSelectorName>
+                                                Server Default
+                                            </ModelSelectorName>
+                                            {selectedModel === "" ? (
+                                                <Check className="ml-auto size-4" />
+                                            ) : (
+                                                <div className="ml-auto size-4" />
+                                            )}
+                                        </ModelSelectorItem>
+                                    </ModelSelectorGroup>
+                                    <ModelSelectorSeparator />
+                                    {MODEL_CHEFS.map((chef) => (
+                                        <ModelSelectorGroup
+                                            heading={
+                                                chef.charAt(0).toUpperCase() +
+                                                chef.slice(1)
+                                            }
+                                            key={chef}
+                                        >
+                                            {MODEL_PRICING.filter(
+                                                (model) =>
+                                                    model.provider === chef,
+                                            ).map((model) => (
+                                                <ModelSelectorItem
+                                                    className="rounded-none"
+                                                    key={model.id}
+                                                    onSelect={() =>
+                                                        handleModelSelect(
+                                                            model.id,
+                                                        )
+                                                    }
+                                                    value={model.id}
+                                                >
+                                                    <ModelSelectorLogo
+                                                        provider={
+                                                            model.provider
+                                                        }
+                                                    />
+                                                    <ModelSelectorName>
+                                                        {model.name}
+                                                    </ModelSelectorName>
+                                                    <span className="text-muted-foreground text-xs mr-2">
+                                                        {getModelMultiplier(
+                                                            model.id,
+                                                        )}
+                                                        x
+                                                    </span>
+                                                    {selectedModel ===
+                                                    model.id ? (
+                                                        <Check className="ml-auto size-4" />
+                                                    ) : (
+                                                        <div className="ml-auto size-4" />
+                                                    )}
+                                                </ModelSelectorItem>
+                                            ))}
+                                        </ModelSelectorGroup>
+                                    ))}
+                                </ModelSelectorList>
+                            </ModelSelectorContent>
+                        </ModelSelector>
+                    </div>
+                    {!isMobile && (
+                        <div className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                            Applies to new requests
+                        </div>
+                    )}
+                </div>
                 <ChatInput
                     input={input}
                     status={status}

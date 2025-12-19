@@ -4,15 +4,15 @@ import Link from "next/link"
 import { FaGithub } from "react-icons/fa"
 
 export const metadata: Metadata = {
-    title: "About - Next AI Draw.io",
+    title: "Giới thiệu - Next AI Draw.io",
     description:
-        "Landing page for a text to diagram AI platform. Convert prompts to draw.io diagrams fast.",
+        "Nền tảng AI chuyển văn bản thành sơ đồ. Tạo diagram draw.io nhanh từ prompt.",
     keywords: [
-        "AI diagram",
+        "AI sơ đồ",
         "text to diagram",
         "draw.io",
-        "architecture diagrams",
-        "workflow mapping",
+        "kiến trúc hệ thống",
+        "workflow",
         "diagram SaaS",
     ],
 }
@@ -24,7 +24,7 @@ function formatNumber(num: number): string {
     return num.toString()
 }
 
-export default function About() {
+export default function AboutVI() {
     const dailyRequestLimit = Number(process.env.DAILY_REQUEST_LIMIT) || 20
     const dailyTokenLimit = Number(process.env.DAILY_TOKEN_LIMIT) || 500000
     const tpmLimit = Number(process.env.TPM_LIMIT) || 50000
@@ -44,31 +44,31 @@ export default function About() {
                             href="/"
                             className="transition hover:text-foreground"
                         >
-                            Editor
+                            Trình chỉnh sửa
                         </Link>
-                        <Link href="/about" className="text-foreground">
-                            About
+                        <Link href="/about/vi" className="text-foreground">
+                            Giới thiệu
                         </Link>
                         <a
                             href="https://github.com/DayuanJiang/next-ai-draw-io"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 border border-border bg-card px-3 py-2 text-foreground transition hover:-translate-y-0.5 hover:bg-secondary"
-                            aria-label="View on GitHub"
+                            aria-label="Xem trên GitHub"
                         >
                             <FaGithub className="h-4 w-4" />
                             GitHub
                         </a>
                     </nav>
                     <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                        <Link href="/about" className="text-foreground">
+                        <Link
+                            href="/about"
+                            className="transition hover:text-foreground"
+                        >
                             English
                         </Link>
                         <span className="text-muted-foreground/40">|</span>
-                        <Link
-                            href="/about/vi"
-                            className="transition hover:text-foreground"
-                        >
+                        <Link href="/about/vi" className="text-foreground">
                             Tiếng Việt
                         </Link>
                     </div>
@@ -82,17 +82,16 @@ export default function About() {
                             <div className="flex items-center gap-3">
                                 <span className="h-1 w-8 bg-chart-3" />
                                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-                                    Text to diagram AI
+                                    AI tạo sơ đồ từ văn bản
                                 </p>
                             </div>
                             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
-                                Build diagrams the same way you describe
-                                systems.
+                                Tạo sơ đồ đúng như cách bạn mô tả hệ thống.
                             </h1>
                             <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-                                Turn plain language into precise draw.io
-                                diagrams. Draft architecture, workflows, and
-                                data flows in a single prompt, then refine with
+                                Biến ngôn ngữ tự nhiên thành sơ đồ draw.io chính
+                                xác. Phác thảo kiến trúc, quy trình và luồng dữ
+                                liệu chỉ với một prompt, rồi tinh chỉnh bằng
                                 chat.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
@@ -100,47 +99,47 @@ export default function About() {
                                     href="/"
                                     className="inline-flex items-center justify-center border border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/90"
                                 >
-                                    Open Editor
+                                    Mở trình chỉnh sửa
                                 </Link>
                                 <Link
                                     href="/"
                                     className="inline-flex items-center justify-center border border-border bg-secondary px-6 py-3 text-sm font-semibold text-foreground transition hover:-translate-y-0.5 hover:bg-secondary/80"
                                 >
-                                    Try a prompt
+                                    Thử một prompt
                                 </Link>
                             </div>
                             <div className="mt-8 grid gap-4 sm:grid-cols-3">
                                 <div className="border border-border bg-chart-1/10 p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Draft speed
+                                        Tốc độ phác thảo
                                     </p>
                                     <p className="mt-2 text-2xl font-semibold">
-                                        Minutes
+                                        Vài phút
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        from prompt to diagram
+                                        từ prompt đến sơ đồ
                                     </p>
                                 </div>
                                 <div className="border border-border bg-chart-2/10 p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Providers
+                                        Nhà cung cấp
                                     </p>
                                     <p className="mt-2 text-2xl font-semibold">
-                                        8+ models
+                                        8+ mô hình
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        bring your own key
+                                        tự mang khóa API
                                     </p>
                                 </div>
                                 <div className="border border-border bg-chart-3/10 p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Outputs
+                                        Đầu ra
                                     </p>
                                     <p className="mt-2 text-2xl font-semibold">
                                         Draw.io XML
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        export ready
+                                        sẵn sàng xuất
                                     </p>
                                 </div>
                             </div>
@@ -148,20 +147,20 @@ export default function About() {
                         <div className="grid gap-4">
                             <div className="border border-border bg-secondary p-4">
                                 <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                                    <span>Live prompt</span>
+                                    <span>Prompt trực tiếp</span>
                                     <span className="text-foreground">
                                         AI + draw.io
                                     </span>
                                 </div>
                                 <p className="mt-4 border border-border bg-card p-4 text-sm text-muted-foreground">
-                                    Build an AWS architecture with a web client,
-                                    API gateway, workers, and a data lake. Add
-                                    animated connectors for the ingestion flow.
+                                    Xây dựng kiến trúc AWS với web client, API
+                                    gateway, workers và data lake. Thêm
+                                    connector động cho luồng nạp dữ liệu.
                                 </p>
                                 <div className="mt-4 border border-border bg-card">
                                     <Image
                                         src="/aws_demo.svg"
-                                        alt="AI generated AWS architecture diagram"
+                                        alt="Sơ đồ kiến trúc AWS do AI tạo"
                                         width={520}
                                         height={360}
                                         className="h-auto w-full"
@@ -172,20 +171,20 @@ export default function About() {
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Edit loops
+                                        Vòng lặp chỉnh sửa
                                     </p>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        Chat to reshape layouts, labels, and
-                                        connectors without touching XML.
+                                        Chat để chỉnh bố cục, nhãn và connector
+                                        mà không cần chạm vào XML.
                                     </p>
                                 </div>
                                 <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                        History
+                                        Lịch sử
                                     </p>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        Restore any previous version of your
-                                        diagram in seconds.
+                                        Khôi phục bất kỳ phiên bản trước nào
+                                        trong vài giây.
                                     </p>
                                 </div>
                             </div>
@@ -197,33 +196,33 @@ export default function About() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
-                                Designed for system thinkers.
+                                Dành cho người tư duy hệ thống.
                             </h2>
                             <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                                Convert product plans and architecture diagrams
-                                into artifacts your team can ship with.
+                                Biến kế hoạch sản phẩm và kiến trúc thành tài
+                                liệu mà đội ngũ có thể triển khai ngay.
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                             <span className="border border-border bg-chart-1/15 px-3 py-1 text-foreground">
-                                Open source
+                                Mã nguồn mở
                             </span>
                             <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
-                                Self host ready
+                                Sẵn sàng tự triển khai
                             </span>
                             <span className="border border-border bg-chart-3/15 px-3 py-1 text-foreground">
-                                Draw.io native
+                                Chuẩn draw.io
                             </span>
                         </div>
                     </div>
                     <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <div className="border border-border border-t-4 border-t-chart-1 bg-card p-6">
                             <h3 className="text-lg font-semibold">
-                                Cloud architecture
+                                Kiến trúc đám mây
                             </h3>
                             <p className="mt-3 text-sm text-muted-foreground">
-                                Generate AWS, GCP, and Azure diagrams with
-                                service icons and clean grouping.
+                                Tạo sơ đồ AWS, GCP và Azure với icon dịch vụ và
+                                nhóm rõ ràng.
                             </p>
                             <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 <span className="border border-border bg-chart-1/10 px-3 py-1">
@@ -239,38 +238,38 @@ export default function About() {
                         </div>
                         <div className="border border-border border-t-4 border-t-chart-2 bg-card p-6">
                             <h3 className="text-lg font-semibold">
-                                Product workflows
+                                Quy trình sản phẩm
                             </h3>
                             <p className="mt-3 text-sm text-muted-foreground">
-                                Outline onboarding, approvals, and data
-                                pipelines in minutes.
+                                Phác thảo onboarding, phê duyệt và pipeline dữ
+                                liệu trong vài phút.
                             </p>
                             <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                    Flows
+                                    Luồng
                                 </span>
                                 <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                    Swimlanes
+                                    Swimlane
                                 </span>
                                 <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                    Journey maps
+                                    Journey map
                                 </span>
                             </div>
                         </div>
                         <div className="border border-border border-t-4 border-t-chart-3 bg-card p-6">
                             <h3 className="text-lg font-semibold">
-                                Diagram ops
+                                Vận hành sơ đồ
                             </h3>
                             <p className="mt-3 text-sm text-muted-foreground">
-                                Save every revision, roll back changes, and keep
-                                your context intact.
+                                Lưu mọi phiên bản, hoàn tác thay đổi và giữ
+                                nguyên ngữ cảnh.
                             </p>
                             <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                    Version history
+                                    Lịch sử phiên bản
                                 </span>
                                 <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                    Export ready
+                                    Sẵn sàng xuất
                                 </span>
                             </div>
                         </div>
@@ -279,7 +278,9 @@ export default function About() {
 
                 <section className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
                     <div className="border border-border border-t-4 border-t-chart-4 bg-card p-8">
-                        <h2 className="text-2xl font-semibold">How it works</h2>
+                        <h2 className="text-2xl font-semibold">
+                            Cách hoạt động
+                        </h2>
                         <div className="mt-6 space-y-5">
                             <div className="flex items-start gap-4">
                                 <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
@@ -287,11 +288,11 @@ export default function About() {
                                 </span>
                                 <div>
                                     <h3 className="text-base font-semibold">
-                                        Describe the outcome
+                                        Mô tả kết quả mong muốn
                                     </h3>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        Start with a prompt or upload a diagram
-                                        image.
+                                        Bắt đầu với một prompt hoặc tải lên ảnh
+                                        sơ đồ.
                                     </p>
                                 </div>
                             </div>
@@ -301,11 +302,11 @@ export default function About() {
                                 </span>
                                 <div>
                                     <h3 className="text-base font-semibold">
-                                        AI drafts the diagram
+                                        AI phác thảo sơ đồ
                                     </h3>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        Generate draw.io XML, icons, and layout
-                                        instantly.
+                                        Tạo XML draw.io, icon và bố cục ngay lập
+                                        tức.
                                     </p>
                                 </div>
                             </div>
@@ -315,51 +316,49 @@ export default function About() {
                                 </span>
                                 <div>
                                     <h3 className="text-base font-semibold">
-                                        Refine and export
+                                        Tinh chỉnh và xuất
                                     </h3>
                                     <p className="mt-2 text-sm text-muted-foreground">
-                                        Use chat controls, then export SVG, PNG,
-                                        or draw.io files.
+                                        Dùng chat để chỉnh, rồi xuất SVG, PNG
+                                        hoặc file draw.io.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="border border-border border-t-4 border-t-chart-5 bg-card p-8">
-                        <h2 className="text-2xl font-semibold">
-                            Feature highlights
-                        </h2>
+                        <h2 className="text-2xl font-semibold">Điểm nổi bật</h2>
                         <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
                             <li>
-                                LLM powered diagram creation and editing with
-                                natural language prompts.
+                                Tạo và chỉnh sửa sơ đồ bằng LLM với prompt ngôn
+                                ngữ tự nhiên.
                             </li>
                             <li>
-                                Image based diagram replication and enhancement
-                                for legacy flows.
+                                Nhân bản và cải thiện sơ đồ từ ảnh để xử lý
+                                luồng cũ.
                             </li>
                             <li>
-                                Interactive chat interface for precise layout
-                                control.
+                                Giao diện chat tương tác để kiểm soát bố cục
+                                chính xác.
                             </li>
                             <li>
-                                Animated connectors for data flow storytelling.
+                                Connector động cho storytelling luồng dữ liệu.
                             </li>
                             <li>
-                                Multi provider support including AWS Bedrock,
+                                Hỗ trợ nhiều nhà cung cấp gồm AWS Bedrock,
                                 OpenAI, Anthropic, Google AI, Azure OpenAI,
-                                Ollama, OpenRouter, and DeepSeek.
+                                Ollama, OpenRouter và DeepSeek.
                             </li>
                         </ul>
                         <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                             <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                Chat controls
+                                Điều khiển chat
                             </span>
                             <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                Version history
+                                Lịch sử phiên bản
                             </span>
                             <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                Export ready
+                                Sẵn sàng xuất
                             </span>
                         </div>
                     </div>
@@ -369,69 +368,67 @@ export default function About() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
-                                Diagram gallery
+                                Bộ sưu tập sơ đồ
                             </h2>
                             <p className="mt-3 text-base text-muted-foreground">
-                                Sample outputs from real prompts.
+                                Mẫu đầu ra từ prompt thực tế.
                             </p>
                         </div>
                         <Link
                             href="/"
                             className="inline-flex items-center justify-center border border-border bg-secondary px-4 py-2 text-sm font-semibold text-foreground transition hover:-translate-y-0.5 hover:bg-secondary/80"
                         >
-                            Try your own prompt
+                            Thử prompt của bạn
                         </Link>
                     </div>
                     <div className="mt-8 grid gap-4 md:grid-cols-2">
                         <div className="border border-border border-t-4 border-t-chart-1 bg-card p-4">
                             <Image
                                 src="/animated_connectors.svg"
-                                alt="Transformer architecture with animated connectors"
+                                alt="Kiến trúc transformer với connector động"
                                 width={520}
                                 height={360}
                                 className="h-auto w-full"
                             />
                             <p className="mt-4 text-sm text-muted-foreground">
-                                Animated transformer connectors for clear data
-                                flow storytelling.
+                                Connector động giúp trình bày rõ luồng dữ liệu.
                             </p>
                         </div>
                         <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
                             <Image
                                 src="/gcp_demo.svg"
-                                alt="GCP architecture diagram"
+                                alt="Sơ đồ kiến trúc GCP"
                                 width={520}
                                 height={360}
                                 className="h-auto w-full"
                             />
                             <p className="mt-4 text-sm text-muted-foreground">
-                                GCP infrastructure with concise service
-                                grouping.
+                                Hạ tầng GCP với nhóm dịch vụ gọn gàng.
                             </p>
                         </div>
                         <div className="border border-border border-t-4 border-t-chart-3 bg-card p-4">
                             <Image
                                 src="/azure_demo.svg"
-                                alt="Azure architecture diagram"
+                                alt="Sơ đồ kiến trúc Azure"
                                 width={520}
                                 height={360}
                                 className="h-auto w-full"
                             />
                             <p className="mt-4 text-sm text-muted-foreground">
-                                Azure layout for quick stakeholder reviews.
+                                Bố cục Azure rõ ràng cho review nhanh.
                             </p>
                         </div>
                         <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
                             <Image
                                 src="/cat_demo.svg"
-                                alt="Sketch of a cat"
+                                alt="Bản phác thảo con mèo"
                                 width={320}
                                 height={320}
                                 className="h-auto w-full"
                             />
                             <p className="mt-4 text-sm text-muted-foreground">
-                                Draw sketches, flowcharts, and everything in
-                                between.
+                                Vẽ phác thảo, flowchart và nhiều loại sơ đồ
+                                khác.
                             </p>
                         </div>
                     </div>
@@ -441,57 +438,56 @@ export default function About() {
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
-                                Usage and transparency
+                                Mức sử dụng và minh bạch
                             </h2>
                             <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                                The hosted demo is rate limited to keep service
-                                reliable. Use your own API key for higher
-                                throughput.
+                                Bản demo có giới hạn để đảm bảo ổn định. Dùng
+                                khóa API riêng để tăng thông lượng.
                             </p>
                         </div>
                         <Link
                             href="/"
                             className="inline-flex items-center justify-center border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground"
                         >
-                            Configure in settings
+                            Cấu hình trong cài đặt
                         </Link>
                     </div>
                     <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div className="border border-border bg-chart-1/10 p-5 text-center">
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Token usage
+                                Sử dụng token
                             </p>
                             <p className="mt-3 text-2xl font-semibold">
                                 {formatNumber(tpmLimit)}
                                 <span className="text-sm font-normal text-muted-foreground">
-                                    /min
+                                    /phút
                                 </span>
                             </p>
                             <p className="text-lg font-semibold">
                                 {formatNumber(dailyTokenLimit)}
                                 <span className="text-sm font-normal text-muted-foreground">
-                                    /day
+                                    /ngày
                                 </span>
                             </p>
                         </div>
                         <div className="border border-border bg-chart-2/10 p-5 text-center">
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Daily requests
+                                Yêu cầu mỗi ngày
                             </p>
                             <p className="mt-3 text-3xl font-semibold">
                                 {dailyRequestLimit}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                                requests
+                                lượt yêu cầu
                             </p>
                         </div>
                         <div className="border border-border bg-chart-3/10 p-5 text-center">
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Bring your key
+                                Dùng khóa riêng
                             </p>
                             <p className="mt-3 text-sm text-muted-foreground">
-                                Configure your provider and API key in the chat
-                                settings. Keys stay local to your browser.
+                                Cấu hình nhà cung cấp và khóa API trong phần cài
+                                đặt chat. Khóa chỉ lưu trong trình duyệt.
                             </p>
                         </div>
                     </div>
@@ -501,16 +497,15 @@ export default function About() {
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
-                                Open source and community backed
+                                Mã nguồn mở, cộng đồng hậu thuẫn
                             </h2>
                             <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                                Fork the project, run it privately, or support
-                                the hosted demo. Every sponsor keeps the service
-                                running.
+                                Fork dự án, chạy riêng tư hoặc ủng hộ bản demo.
+                                Mỗi nhà tài trợ giúp dịch vụ vận hành ổn định.
                             </p>
                             <p className="mt-3 text-sm text-muted-foreground">
-                                For questions or support, open an issue on the
-                                GitHub repository or contact: me[at]jiang.jp
+                                Nếu cần hỗ trợ, hãy mở issue trên GitHub hoặc
+                                liên hệ: me[at]jiang.jp
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
@@ -527,7 +522,7 @@ export default function About() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center border border-border bg-secondary px-4 py-2 text-sm font-semibold text-foreground"
                             >
-                                View repository
+                                Xem repository
                             </a>
                         </div>
                     </div>
@@ -537,18 +532,18 @@ export default function About() {
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
-                                Ready to sketch in seconds?
+                                Sẵn sàng phác thảo trong vài giây?
                             </h2>
                             <p className="mt-3 max-w-2xl text-base text-primary-foreground/80">
-                                Start with a prompt, refine with chat, and ship
-                                diagrams that teams can act on.
+                                Bắt đầu với prompt, tinh chỉnh bằng chat và tạo
+                                sơ đồ mà đội ngũ có thể triển khai ngay.
                             </p>
                         </div>
                         <Link
                             href="/"
                             className="inline-flex items-center justify-center border border-background bg-background px-6 py-3 text-sm font-semibold text-foreground transition hover:-translate-y-0.5"
                         >
-                            Open the editor
+                            Mở trình chỉnh sửa
                         </Link>
                     </div>
                 </section>
@@ -556,7 +551,7 @@ export default function About() {
 
             <footer className="border-t border-border bg-background">
                 <div className="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
-                    Next AI Draw.io - Open source AI powered diagram generation
+                    Next AI Draw.io - Nền tảng tạo sơ đồ AI mã nguồn mở
                 </div>
             </footer>
         </div>
