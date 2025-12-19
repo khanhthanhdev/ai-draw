@@ -91,7 +91,7 @@ export function QuotaLimitToast({
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">
-                <a
+                {/* <a
                     href="https://github.com/DayuanJiang/next-ai-draw-io"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -108,7 +108,7 @@ export function QuotaLimitToast({
                 >
                     <Coffee className="w-3.5 h-3.5" />
                     Sponsor
-                </a>
+                </a> */}
             </div>
         </div>
     )

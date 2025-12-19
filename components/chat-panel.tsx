@@ -1291,7 +1291,7 @@ Continue from EXACTLY where you stopped.`,
                         <div className="flex items-center gap-2">
                             <Image
                                 src="/favicon.ico"
-                                alt="Next AI Drawio"
+                                alt="Clarify"
                                 width={isMobile ? 24 : 28}
                                 height={isMobile ? 24 : 28}
                                 className="rounded flex-shrink-0"
@@ -1299,7 +1299,7 @@ Continue from EXACTLY where you stopped.`,
                             <h1
                                 className={`${isMobile ? "text-sm" : "text-base"} font-semibold tracking-tight whitespace-nowrap`}
                             >
-                                Next AI Drawio
+                                Clarify
                             </h1>
                         </div>
                         {!isMobile && (
@@ -1342,7 +1342,7 @@ Continue from EXACTLY where you stopped.`,
                             />
                         </ButtonWithTooltip>
                         <div className="w-px h-5 bg-border mx-1" />
-                        <a
+                        {/* <a
                             href="https://github.com/DayuanJiang/next-ai-draw-io"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -1351,7 +1351,7 @@ Continue from EXACTLY where you stopped.`,
                             <FaGithub
                                 className={`${isMobile ? "w-4 h-4" : "w-5 h-5"}`}
                             />
-                        </a>
+                        </a> */}
                         <ButtonWithTooltip
                             tooltipContent="Settings"
                             variant="ghost"

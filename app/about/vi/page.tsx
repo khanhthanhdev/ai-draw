@@ -2,9 +2,12 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { FaGithub } from "react-icons/fa"
+import { PricingSection } from "@/components/pricing-section"
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
+import { FadeIn } from "@/components/ui/fade-in"
 
 export const metadata: Metadata = {
-    title: "Giới thiệu - Next AI Draw.io",
+    title: "Giới thiệu - Clarify",
     description:
         "Nền tảng AI chuyển văn bản thành sơ đồ. Tạo diagram draw.io nhanh từ prompt.",
     keywords: [
@@ -37,7 +40,7 @@ export default function AboutVI() {
                         href="/"
                         className="text-lg font-semibold tracking-tight"
                     >
-                        Next AI Draw.io
+                        Clarify
                     </Link>
                     <nav className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                         <Link
@@ -49,7 +52,7 @@ export default function AboutVI() {
                         <Link href="/about/vi" className="text-foreground">
                             Giới thiệu
                         </Link>
-                        <a
+                        {/* <a
                             href="https://github.com/DayuanJiang/next-ai-draw-io"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -58,7 +61,7 @@ export default function AboutVI() {
                         >
                             <FaGithub className="h-4 w-4" />
                             GitHub
-                        </a>
+                        </a> */}
                     </nav>
                     <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                         <Link
@@ -76,9 +79,18 @@ export default function AboutVI() {
             </header>
 
             <main className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
-                <section className="relative left-1/2 right-1/2 mt-10 w-screen -translate-x-1/2 border-y border-border bg-gradient-to-br from-chart-1/15 via-background to-chart-5/15">
-                    <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
-                        <div>
+                <section className="relative left-1/2 right-1/2 mt-10 w-screen -translate-x-1/2 border-y border-border overflow-hidden">
+                    <AnimatedGridPattern
+                        numSquares={30}
+                        maxOpacity={0.1}
+                        duration={3}
+                        repeatDelay={1}
+                        className={
+                            "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12 fill-black/[0.02] stroke-black/5 dark:fill-white/[0.02] dark:stroke-white/5"
+                        }
+                    />
+                    <div className="relative mx-auto grid max-w-[1400px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+                        <FadeIn>
                             <div className="flex items-center gap-3">
                                 <span className="h-1 w-8 bg-chart-3" />
                                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
@@ -97,7 +109,7 @@ export default function AboutVI() {
                             <div className="mt-6 flex flex-wrap gap-3">
                                 <Link
                                     href="/"
-                                    className="inline-flex items-center justify-center border border-primary bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/90"
+                                    className="inline-flex items-center justify-center rounded-md border border-primary bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
                                 >
                                     Mở trình chỉnh sửa
                                 </Link>
@@ -108,7 +120,10 @@ export default function AboutVI() {
                                     Thử một prompt
                                 </Link>
                             </div>
-                            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                            <FadeIn
+                                delay={0.2}
+                                className="mt-8 grid gap-4 sm:grid-cols-3"
+                            >
                                 <div className="border border-border bg-chart-1/10 p-4">
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                                         Tốc độ phác thảo
@@ -142,9 +157,9 @@ export default function AboutVI() {
                                         sẵn sàng xuất
                                     </p>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="grid gap-4">
+                            </FadeIn>
+                        </FadeIn>
+                        <FadeIn delay={0.3} className="grid gap-4">
                             <div className="border border-border bg-secondary p-4">
                                 <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
                                     <span>Prompt trực tiếp</span>
@@ -188,83 +203,186 @@ export default function AboutVI() {
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </FadeIn>
                     </div>
                 </section>
 
                 <section className="mt-16">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                        <div>
-                            <h2 className="text-3xl font-semibold">
-                                Dành cho người tư duy hệ thống.
-                            </h2>
-                            <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                                Biến kế hoạch sản phẩm và kiến trúc thành tài
-                                liệu mà đội ngũ có thể triển khai ngay.
-                            </p>
+                    <FadeIn>
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <h2 className="text-3xl font-semibold">
+                                    Dành cho người tư duy hệ thống.
+                                </h2>
+                                <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+                                    Biến kế hoạch sản phẩm và kiến trúc thành
+                                    tài liệu mà đội ngũ có thể triển khai ngay.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                <span className="border border-border bg-chart-1/15 px-3 py-1 text-foreground">
+                                    Mã nguồn mở
+                                </span>
+                                <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
+                                    Sẵn sàng tự triển khai
+                                </span>
+                                <span className="border border-border bg-chart-3/15 px-3 py-1 text-foreground">
+                                    Chuẩn draw.io
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                            <span className="border border-border bg-chart-1/15 px-3 py-1 text-foreground">
-                                Mã nguồn mở
-                            </span>
-                            <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
-                                Sẵn sàng tự triển khai
-                            </span>
-                            <span className="border border-border bg-chart-3/15 px-3 py-1 text-foreground">
-                                Chuẩn draw.io
-                            </span>
-                        </div>
-                    </div>
+                    </FadeIn>
                     <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <div className="border border-border border-t-4 border-t-chart-1 bg-card p-6">
-                            <h3 className="text-lg font-semibold">
-                                Kiến trúc đám mây
-                            </h3>
-                            <p className="mt-3 text-sm text-muted-foreground">
-                                Tạo sơ đồ AWS, GCP và Azure với icon dịch vụ và
-                                nhóm rõ ràng.
-                            </p>
-                            <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                <span className="border border-border bg-chart-1/10 px-3 py-1">
-                                    AWS
-                                </span>
-                                <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                    GCP
-                                </span>
-                                <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                    Azure
-                                </span>
+                        <FadeIn delay={0.2} className="h-full">
+                            <div className="h-full border border-border border-t-4 border-t-chart-1 bg-card p-6">
+                                <h3 className="text-lg font-semibold">
+                                    Kiến trúc đám mây
+                                </h3>
+                                <p className="mt-3 text-sm text-muted-foreground">
+                                    Tạo sơ đồ AWS, GCP và Azure với icon dịch vụ
+                                    và nhóm rõ ràng.
+                                </p>
+                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                                    <span className="border border-border bg-chart-1/10 px-3 py-1">
+                                        AWS
+                                    </span>
+                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
+                                        GCP
+                                    </span>
+                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
+                                        Azure
+                                    </span>
+                                </div>
+                            </div>
+                        </FadeIn>
+                        <FadeIn delay={0.3} className="h-full">
+                            <div className="h-full border border-border border-t-4 border-t-chart-2 bg-card p-6">
+                                <h3 className="text-lg font-semibold">
+                                    Quy trình sản phẩm
+                                </h3>
+                                <p className="mt-3 text-sm text-muted-foreground">
+                                    Phác thảo onboarding, phê duyệt và pipeline
+                                    dữ liệu trong vài phút.
+                                </p>
+                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
+                                        Luồng
+                                    </span>
+                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
+                                        Swimlane
+                                    </span>
+                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
+                                        Journey map
+                                    </span>
+                                </div>
+                            </div>
+                        </FadeIn>
+                        <FadeIn delay={0.4} className="h-full">
+                            <div className="h-full border border-border border-t-4 border-t-chart-3 bg-card p-6">
+                                <h3 className="text-lg font-semibold">
+                                    Vận hành sơ đồ
+                                </h3>
+                                <p className="mt-3 text-sm text-muted-foreground">
+                                    Lưu mọi phiên bản, hoàn tác thay đổi và giữ
+                                    nguyên ngữ cảnh.
+                                </p>
+                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
+                                        Lịch sử phiên bản
+                                    </span>
+                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
+                                        Sẵn sàng xuất
+                                    </span>
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+                </section>
+
+                <section className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+                    <FadeIn className="h-full">
+                        <div className="h-full border border-border border-t-4 border-t-chart-4 bg-card p-8">
+                            <h2 className="text-2xl font-semibold">
+                                Cách hoạt động
+                            </h2>
+                            <div className="mt-6 space-y-5">
+                                <div className="flex items-start gap-4">
+                                    <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
+                                        1
+                                    </span>
+                                    <div>
+                                        <h3 className="text-base font-semibold">
+                                            Mô tả kết quả mong muốn
+                                        </h3>
+                                        <p className="mt-2 text-sm text-muted-foreground">
+                                            Bắt đầu với một prompt hoặc tải lên
+                                            ảnh sơ đồ.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
+                                        2
+                                    </span>
+                                    <div>
+                                        <h3 className="text-base font-semibold">
+                                            AI phác thảo sơ đồ
+                                        </h3>
+                                        <p className="mt-2 text-sm text-muted-foreground">
+                                            Tạo XML draw.io, icon và bố cục ngay
+                                            lập tức.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
+                                        3
+                                    </span>
+                                    <div>
+                                        <h3 className="text-base font-semibold">
+                                            Tinh chỉnh và xuất
+                                        </h3>
+                                        <p className="mt-2 text-sm text-muted-foreground">
+                                            Dùng chat để chỉnh, rồi xuất SVG,
+                                            PNG hoặc file draw.io.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="border border-border border-t-4 border-t-chart-2 bg-card p-6">
-                            <h3 className="text-lg font-semibold">
-                                Quy trình sản phẩm
-                            </h3>
-                            <p className="mt-3 text-sm text-muted-foreground">
-                                Phác thảo onboarding, phê duyệt và pipeline dữ
-                                liệu trong vài phút.
-                            </p>
-                            <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    </FadeIn>
+                    <FadeIn delay={0.2} className="h-full">
+                        <div className="h-full border border-border border-t-4 border-t-chart-5 bg-card p-8">
+                            <h2 className="text-2xl font-semibold">
+                                Điểm nổi bật
+                            </h2>
+                            <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
+                                <li>
+                                    Tạo và chỉnh sửa sơ đồ bằng LLM với prompt
+                                    ngôn ngữ tự nhiên.
+                                </li>
+                                <li>
+                                    Nhân bản và cải thiện sơ đồ từ ảnh để xử lý
+                                    luồng cũ.
+                                </li>
+                                <li>
+                                    Giao diện chat tương tác để kiểm soát bố cục
+                                    chính xác.
+                                </li>
+                                <li>
+                                    Connector động cho storytelling luồng dữ
+                                    liệu.
+                                </li>
+                                <li>
+                                    Hỗ trợ nhiều nhà cung cấp gồm AWS Bedrock,
+                                    OpenAI, Anthropic, Google AI, Azure OpenAI,
+                                    Ollama, OpenRouter và DeepSeek.
+                                </li>
+                            </ul>
+                            <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                                 <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                    Luồng
+                                    Điều khiển chat
                                 </span>
-                                <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                    Swimlane
-                                </span>
-                                <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                    Journey map
-                                </span>
-                            </div>
-                        </div>
-                        <div className="border border-border border-t-4 border-t-chart-3 bg-card p-6">
-                            <h3 className="text-lg font-semibold">
-                                Vận hành sơ đồ
-                            </h3>
-                            <p className="mt-3 text-sm text-muted-foreground">
-                                Lưu mọi phiên bản, hoàn tác thay đổi và giữ
-                                nguyên ngữ cảnh.
-                            </p>
-                            <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 <span className="border border-border bg-chart-3/10 px-3 py-1">
                                     Lịch sử phiên bản
                                 </span>
@@ -273,99 +391,11 @@ export default function AboutVI() {
                                 </span>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <section className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-                    <div className="border border-border border-t-4 border-t-chart-4 bg-card p-8">
-                        <h2 className="text-2xl font-semibold">
-                            Cách hoạt động
-                        </h2>
-                        <div className="mt-6 space-y-5">
-                            <div className="flex items-start gap-4">
-                                <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
-                                    1
-                                </span>
-                                <div>
-                                    <h3 className="text-base font-semibold">
-                                        Mô tả kết quả mong muốn
-                                    </h3>
-                                    <p className="mt-2 text-sm text-muted-foreground">
-                                        Bắt đầu với một prompt hoặc tải lên ảnh
-                                        sơ đồ.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
-                                    2
-                                </span>
-                                <div>
-                                    <h3 className="text-base font-semibold">
-                                        AI phác thảo sơ đồ
-                                    </h3>
-                                    <p className="mt-2 text-sm text-muted-foreground">
-                                        Tạo XML draw.io, icon và bố cục ngay lập
-                                        tức.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <span className="flex h-10 w-10 items-center justify-center border border-border bg-primary text-sm font-semibold text-primary-foreground">
-                                    3
-                                </span>
-                                <div>
-                                    <h3 className="text-base font-semibold">
-                                        Tinh chỉnh và xuất
-                                    </h3>
-                                    <p className="mt-2 text-sm text-muted-foreground">
-                                        Dùng chat để chỉnh, rồi xuất SVG, PNG
-                                        hoặc file draw.io.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="border border-border border-t-4 border-t-chart-5 bg-card p-8">
-                        <h2 className="text-2xl font-semibold">Điểm nổi bật</h2>
-                        <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
-                            <li>
-                                Tạo và chỉnh sửa sơ đồ bằng LLM với prompt ngôn
-                                ngữ tự nhiên.
-                            </li>
-                            <li>
-                                Nhân bản và cải thiện sơ đồ từ ảnh để xử lý
-                                luồng cũ.
-                            </li>
-                            <li>
-                                Giao diện chat tương tác để kiểm soát bố cục
-                                chính xác.
-                            </li>
-                            <li>
-                                Connector động cho storytelling luồng dữ liệu.
-                            </li>
-                            <li>
-                                Hỗ trợ nhiều nhà cung cấp gồm AWS Bedrock,
-                                OpenAI, Anthropic, Google AI, Azure OpenAI,
-                                Ollama, OpenRouter và DeepSeek.
-                            </li>
-                        </ul>
-                        <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                            <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                Điều khiển chat
-                            </span>
-                            <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                Lịch sử phiên bản
-                            </span>
-                            <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                Sẵn sàng xuất
-                            </span>
-                        </div>
-                    </div>
+                    </FadeIn>
                 </section>
 
                 <section className="mt-16">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <FadeIn className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
                                 Bộ sưu tập sơ đồ
@@ -380,61 +410,106 @@ export default function AboutVI() {
                         >
                             Thử prompt của bạn
                         </Link>
-                    </div>
+                    </FadeIn>
                     <div className="mt-8 grid gap-4 md:grid-cols-2">
-                        <div className="border border-border border-t-4 border-t-chart-1 bg-card p-4">
-                            <Image
-                                src="/animated_connectors.svg"
-                                alt="Kiến trúc transformer với connector động"
-                                width={520}
-                                height={360}
-                                className="h-auto w-full"
-                            />
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                Connector động giúp trình bày rõ luồng dữ liệu.
-                            </p>
-                        </div>
-                        <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
-                            <Image
-                                src="/gcp_demo.svg"
-                                alt="Sơ đồ kiến trúc GCP"
-                                width={520}
-                                height={360}
-                                className="h-auto w-full"
-                            />
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                Hạ tầng GCP với nhóm dịch vụ gọn gàng.
-                            </p>
-                        </div>
-                        <div className="border border-border border-t-4 border-t-chart-3 bg-card p-4">
-                            <Image
-                                src="/azure_demo.svg"
-                                alt="Sơ đồ kiến trúc Azure"
-                                width={520}
-                                height={360}
-                                className="h-auto w-full"
-                            />
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                Bố cục Azure rõ ràng cho review nhanh.
-                            </p>
-                        </div>
-                        <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
-                            <Image
-                                src="/cat_demo.svg"
-                                alt="Bản phác thảo con mèo"
-                                width={320}
-                                height={320}
-                                className="h-auto w-full"
-                            />
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                Vẽ phác thảo, flowchart và nhiều loại sơ đồ
-                                khác.
-                            </p>
-                        </div>
+                        <FadeIn delay={0.2}>
+                            <div className="border border-border border-t-4 border-t-chart-1 bg-card p-4">
+                                <Image
+                                    src="/animated_connectors.svg"
+                                    alt="Kiến trúc transformer với connector động"
+                                    width={520}
+                                    height={360}
+                                    className="h-auto w-full"
+                                />
+                                <p className="mt-4 text-sm text-muted-foreground">
+                                    Connector động giúp trình bày rõ luồng dữ
+                                    liệu.
+                                </p>
+                            </div>
+                        </FadeIn>
+                        <FadeIn delay={0.3}>
+                            <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
+                                <Image
+                                    src="/gcp_demo.svg"
+                                    alt="Sơ đồ kiến trúc GCP"
+                                    width={520}
+                                    height={360}
+                                    className="h-auto w-full"
+                                />
+                                <p className="mt-4 text-sm text-muted-foreground">
+                                    Hạ tầng GCP với nhóm dịch vụ gọn gàng.
+                                </p>
+                            </div>
+                        </FadeIn>
+                        <FadeIn delay={0.4}>
+                            <div className="border border-border border-t-4 border-t-chart-3 bg-card p-4">
+                                <Image
+                                    src="/azure_demo.svg"
+                                    alt="Sơ đồ kiến trúc Azure"
+                                    width={520}
+                                    height={360}
+                                    className="h-auto w-full"
+                                />
+                                <p className="mt-4 text-sm text-muted-foreground">
+                                    Bố cục Azure rõ ràng cho review nhanh.
+                                </p>
+                            </div>
+                        </FadeIn>
+                        <FadeIn delay={0.5}>
+                            <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
+                                <Image
+                                    src="/cat_demo.svg"
+                                    alt="Bản phác thảo con mèo"
+                                    width={320}
+                                    height={320}
+                                    className="h-auto w-full"
+                                />
+                                <p className="mt-4 text-sm text-muted-foreground">
+                                    Vẽ phác thảo, flowchart và nhiều loại sơ đồ
+                                    khác.
+                                </p>
+                            </div>
+                        </FadeIn>
                     </div>
                 </section>
 
-                <section className="mt-16 border border-border bg-secondary/60 p-8">
+                <PricingSection
+                    title="Bảng giá đơn giản"
+                    description="Chọn gói phù hợp với nhu cầu của bạn."
+                    tiers={[
+                        {
+                            name: "Miễn phí",
+                            price: "0đ",
+                            description: "Dành cho người dùng cá nhân.",
+                            features: [
+                                "Sử dụng mô hình 0x",
+                                "10 sơ đồ/tháng",
+                                "Hàng đợi lâu hơn",
+                            ],
+                            buttonText: "Bắt đầu ngay",
+                            href: "/",
+                        },
+                        {
+                            name: "Cơ bản",
+                            price: "$3",
+                            description: "Dành cho nhu cầu ít.",
+                            features: ["100 credits"],
+                            buttonText: "Mua credits",
+                            href: "/",
+                        },
+                        {
+                            name: "Chuyên nghiệp",
+                            price: "$10",
+                            description: "Dành cho người dùng thường xuyên.",
+                            features: ["500 credits"],
+                            buttonText: "Mua credits",
+                            href: "/",
+                            highlighted: true,
+                        },
+                    ]}
+                />
+
+                <FadeIn className="mt-16 border border-border bg-secondary/60 p-8">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
@@ -491,9 +566,9 @@ export default function AboutVI() {
                             </p>
                         </div>
                     </div>
-                </section>
+                </FadeIn>
 
-                <section className="mt-16 border border-border bg-card p-8">
+                {/* <FadeIn className="mt-16 border border-border bg-card p-8">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
@@ -526,9 +601,9 @@ export default function AboutVI() {
                             </a>
                         </div>
                     </div>
-                </section>
+                </FadeIn> */}
 
-                <section className="mt-16 border border-border bg-gradient-to-r from-primary via-chart-3 to-destructive p-8 text-primary-foreground">
+                <FadeIn className="mt-16 border border-border bg-gradient-to-r from-primary via-chart-3 to-destructive p-8 text-primary-foreground">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h2 className="text-3xl font-semibold">
@@ -546,12 +621,12 @@ export default function AboutVI() {
                             Mở trình chỉnh sửa
                         </Link>
                     </div>
-                </section>
+                </FadeIn>
             </main>
 
             <footer className="border-t border-border bg-background">
                 <div className="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
-                    Next AI Draw.io - Nền tảng tạo sơ đồ AI mã nguồn mở
+                    Clarify - Hiện thực hóa ý tưởng của bạn
                 </div>
             </footer>
         </div>

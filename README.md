@@ -1,8 +1,8 @@
-# Next AI Draw.io
+# Clarify
 
 <div align="center">
 
-**AI-Powered Diagram Creation Tool - Chat, Draw, Visualize**
+**Clarify - See what you mean**
 
 English | [中文](./docs/README_CN.md) | [日本語](./docs/README_JA.md)
 
@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/9d60a3e8-4a1c-4b5e-acbb-26af2d3eabd1
 
 
 ## Table of Contents
-- [Next AI Draw.io ](#next-ai-drawio-)
+- [Clarify](#clarify)
   - [Table of Contents](#table-of-contents)
   - [Examples](#examples)
   - [Features](#features)
@@ -97,7 +97,7 @@ Here are some example prompts and their generated diagrams:
 
 > **Preview Feature**: This feature is experimental and may not stable.
 
-Use Next AI Draw.io with AI agents like Claude Desktop, Cursor, and VS Code via MCP (Model Context Protocol).
+Use Clarify with AI agents like Claude Desktop, Cursor, and VS Code via MCP (Model Context Protocol).
 
 ```json
 {

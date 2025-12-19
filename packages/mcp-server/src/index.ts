@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * MCP Server for Next AI Draw.io
+ * MCP Server for Clarify
  *
  * Enables AI agents (Claude Desktop, Cursor, etc.) to generate and edit
  * draw.io diagrams with real-time browser preview.
