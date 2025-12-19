@@ -1186,7 +1186,7 @@ Continue from EXACTLY where you stopped.`,
     // Collapsed view (desktop only)
     if (!isVisible && !isMobile) {
         return (
-            <div className="h-full flex flex-col items-center pt-4 bg-card border border-border/30 rounded-xl">
+            <div className="h-full flex flex-col items-center pt-4 bg-card border border-border/30 rounded-none">
                 <ButtonWithTooltip
                     tooltipContent="Show chat panel (Ctrl+B)"
                     variant="ghost"
@@ -1211,7 +1211,7 @@ Continue from EXACTLY where you stopped.`,
 
     // Full view
     return (
-        <div className="h-full flex flex-col bg-card shadow-soft animate-slide-in-right rounded-xl border border-border/30 relative">
+        <div className="h-full flex flex-col bg-card shadow-soft animate-slide-in-right rounded-none border border-border/30 relative">
             <Toaster
                 position="bottom-center"
                 richColors
@@ -1288,7 +1288,7 @@ Continue from EXACTLY where you stopped.`,
                             href="https://github.com/DayuanJiang/next-ai-draw-io"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                            className="p-2 rounded-none text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                         >
                             <FaGithub
                                 className={`${isMobile ? "w-4 h-4" : "w-5 h-5"}`}

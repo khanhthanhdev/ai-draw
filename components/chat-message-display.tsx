@@ -78,7 +78,7 @@ function OperationsDisplay({ operations }: { operations: DiagramOperation[] }) {
             {operations.map((op, index) => (
                 <div
                     key={`${op.type}-${op.cell_id}-${index}`}
-                    className="rounded-lg border border-border/50 overflow-hidden bg-background/50"
+                    className="rounded-none border border-border/50 overflow-hidden bg-background/50"
                 >
                     <div className="px-3 py-1.5 bg-muted/40 border-b border-border/30 flex items-center gap-2">
                         <span
@@ -642,11 +642,11 @@ export function ChatMessageDisplay({
         return (
             <div
                 key={callId}
-                className="my-3 rounded-xl border border-border/60 bg-muted/30 overflow-hidden"
+                className="my-3 rounded-none border border-border/60 bg-muted/30 overflow-hidden"
             >
                 <div className="flex items-center justify-between px-4 py-3 bg-muted/50">
                     <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-none bg-primary/10 flex items-center justify-center">
                             <Cpu className="w-3.5 h-3.5 text-primary" />
                         </div>
                         <span className="text-sm font-medium text-foreground/80">
@@ -655,10 +655,10 @@ export function ChatMessageDisplay({
                     </div>
                     <div className="flex items-center gap-2">
                         {state === "input-streaming" && (
-                            <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                            <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-none animate-spin" />
                         )}
                         {state === "output-available" && (
-                            <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-none">
                                 Complete
                             </span>
                         )}
@@ -670,11 +670,11 @@ export function ChatMessageDisplay({
                                         toolName === "append_diagram") &&
                                     !isMxCellXmlComplete(input?.xml)
                                 return isTruncated ? (
-                                    <span className="text-xs font-medium text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">
+                                    <span className="text-xs font-medium text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-none">
                                         Truncated
                                     </span>
                                 ) : (
-                                    <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full">
+                                    <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-none">
                                         Error
                                     </span>
                                 )
@@ -783,7 +783,7 @@ export function ChatMessageDisplay({
                                                                 ),
                                                             )
                                                         }}
-                                                        className="p-1.5 rounded-lg text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted transition-colors"
+                                                        className="p-1.5 rounded-none text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted transition-colors"
                                                         title="Edit message"
                                                     >
                                                         <Pencil className="h-3.5 w-3.5" />
@@ -797,7 +797,7 @@ export function ChatMessageDisplay({
                                                         userMessageText,
                                                     )
                                                 }
-                                                className="p-1.5 rounded-lg text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted transition-colors"
+                                                className="p-1.5 rounded-none text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted transition-colors"
                                                 title={
                                                     copiedMessageId ===
                                                     message.id
@@ -876,7 +876,7 @@ export function ChatMessageDisplay({
                                                 onChange={(e) =>
                                                     setEditText(e.target.value)
                                                 }
-                                                className="w-full min-w-[300px] px-4 py-3 text-sm rounded-2xl border border-primary bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                                                className="w-full min-w-[300px] px-4 py-3 text-sm rounded-none border border-primary bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary"
                                                 rows={Math.min(
                                                     editText.split("\n")
                                                         .length + 1,
@@ -918,7 +918,7 @@ export function ChatMessageDisplay({
                                                         )
                                                         setEditText("")
                                                     }}
-                                                    className="px-3 py-1.5 text-xs rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                                                    className="px-3 py-1.5 text-xs rounded-none bg-muted hover:bg-muted/80 transition-colors"
                                                 >
                                                     Cancel
                                                 </button>
@@ -940,7 +940,7 @@ export function ChatMessageDisplay({
                                                         }
                                                     }}
                                                     disabled={!editText.trim()}
-                                                    className="px-3 py-1.5 text-xs rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                                                    className="px-3 py-1.5 text-xs rounded-none bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
                                                 >
                                                     Save & Submit
                                                 </button>
@@ -1009,11 +1009,11 @@ export function ChatMessageDisplay({
                                                             className={`px-4 py-3 text-sm leading-relaxed ${
                                                                 message.role ===
                                                                 "user"
-                                                                    ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md shadow-sm"
+                                                                    ? "bg-primary text-primary-foreground rounded-none shadow-sm"
                                                                     : message.role ===
                                                                         "system"
-                                                                      ? "bg-destructive/10 text-destructive border border-destructive/20 rounded-2xl rounded-bl-md"
-                                                                      : "bg-muted/60 text-foreground rounded-2xl rounded-bl-md"
+                                                                      ? "bg-destructive/10 text-destructive border border-destructive/20 rounded-none"
+                                                                      : "bg-muted/60 text-foreground rounded-none"
                                                             } ${message.role === "user" && isLastUserMessage && onEditMessage ? "cursor-pointer hover:opacity-90 transition-opacity" : ""} ${groupIndex > 0 ? "mt-3" : ""}`}
                                                             role={
                                                                 message.role ===
@@ -1130,7 +1130,7 @@ export function ChatMessageDisplay({
                                                                                                     key={
                                                                                                         pdfKey
                                                                                                     }
-                                                                                                    className="rounded-lg border border-border/60 bg-muted/30 overflow-hidden"
+                                                                                                    className="rounded-none border border-border/60 bg-muted/30 overflow-hidden"
                                                                                                 >
                                                                                                     <button
                                                                                                         type="button"
@@ -1236,7 +1236,7 @@ export function ChatMessageDisplay({
                                                                                         200
                                                                                     }
                                                                                     alt={`Uploaded diagram or image for AI analysis`}
-                                                                                    className="rounded-lg border border-white/20"
+                                                                                    className="rounded-none border border-white/20"
                                                                                     style={{
                                                                                         objectFit:
                                                                                             "contain",
@@ -1268,7 +1268,7 @@ export function ChatMessageDisplay({
                                                         ),
                                                     )
                                                 }
-                                                className={`p-1.5 rounded-lg transition-colors ${
+                                                className={`p-1.5 rounded-none transition-colors ${
                                                     copiedMessageId ===
                                                     message.id
                                                         ? "text-green-600 bg-green-100"
@@ -1303,7 +1303,7 @@ export function ChatMessageDisplay({
                                                                 messageIndex,
                                                             )
                                                         }
-                                                        className="p-1.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors"
+                                                        className="p-1.5 rounded-none text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors"
                                                         title="Regenerate response"
                                                     >
                                                         <RotateCcw className="h-3.5 w-3.5" />
@@ -1320,7 +1320,7 @@ export function ChatMessageDisplay({
                                                         "good",
                                                     )
                                                 }
-                                                className={`p-1.5 rounded-lg transition-colors ${
+                                                className={`p-1.5 rounded-none transition-colors ${
                                                     feedback[message.id] ===
                                                     "good"
                                                         ? "text-green-600 bg-green-100"
@@ -1339,7 +1339,7 @@ export function ChatMessageDisplay({
                                                         "bad",
                                                     )
                                                 }
-                                                className={`p-1.5 rounded-lg transition-colors ${
+                                                className={`p-1.5 rounded-none transition-colors ${
                                                     feedback[message.id] ===
                                                     "bad"
                                                         ? "text-red-600 bg-red-100"

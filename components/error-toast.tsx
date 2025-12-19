@@ -22,9 +22,9 @@ export function ErrorToast({ message, onDismiss }: ErrorToastProps) {
             tabIndex={0}
             onClick={onDismiss}
             onKeyDown={handleKeyDown}
-            className="flex items-center gap-3 bg-card border border-border/50 px-4 py-3 rounded-xl shadow-sm cursor-pointer hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
+            className="flex items-center gap-3 bg-card border border-border/50 px-4 py-3 rounded-none shadow-sm cursor-pointer hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
         >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-destructive/10 flex-shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 rounded-none bg-destructive/10 flex-shrink-0">
                 <svg
                     className="w-4 h-4 text-destructive"
                     viewBox="0 0 20 20"

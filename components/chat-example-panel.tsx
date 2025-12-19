@@ -27,7 +27,7 @@ function ExampleCard({
     return (
         <button
             onClick={onClick}
-            className={`group w-full text-left p-4 rounded-xl border bg-card hover:bg-accent/50 hover:border-primary/30 transition-all duration-200 hover:shadow-sm ${
+            className={`group w-full text-left p-4 rounded-none border bg-card hover:bg-accent/50 hover:border-primary/30 transition-all duration-200 hover:shadow-sm ${
                 isNew
                     ? "border-primary/40 ring-1 ring-primary/20"
                     : "border-border/60"
@@ -35,7 +35,7 @@ function ExampleCard({
         >
             <div className="flex items-start gap-3">
                 <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                    className={`w-9 h-9 rounded-none flex items-center justify-center shrink-0 transition-colors ${
                         isNew
                             ? "bg-primary/20 group-hover:bg-primary/25"
                             : "bg-primary/10 group-hover:bg-primary/15"
@@ -120,10 +120,10 @@ export default function ExamplePanel({
                 href="https://github.com/DayuanJiang/next-ai-draw-io/tree/main/packages/mcp-server"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block mb-4 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-colors group"
+                className="block mb-4 p-3 rounded-none bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-colors group"
             >
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-none bg-purple-500/20 flex items-center justify-center shrink-0">
                         <Terminal className="w-4 h-4 text-purple-500" />
                     </div>
                     <div className="min-w-0">

@@ -96,9 +96,9 @@ export default function AboutCN() {
                         </div>
                     </div>
 
-                    <div className="relative mb-8 rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 p-[1px] shadow-lg">
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 opacity-20" />
-                        <div className="relative rounded-2xl bg-white/80 backdrop-blur-sm p-6">
+                    <div className="relative mb-8 rounded-none bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 p-[1px] shadow-lg">
+                        <div className="absolute inset-0 rounded-none bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 opacity-20" />
+                        <div className="relative rounded-none bg-white/80 backdrop-blur-sm p-6">
                             {/* Header */}
                             <div className="mb-4">
                                 <h3 className="text-lg font-bold text-gray-900 tracking-tight">
@@ -135,7 +135,7 @@ export default function AboutCN() {
 
                             {/* Limits Cards */}
                             <div className="grid grid-cols-2 gap-3 mb-5">
-                                <div className="rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 p-4 text-center">
+                                <div className="rounded-none bg-gradient-to-br from-amber-100 to-orange-100 p-4 text-center">
                                     <div className="text-xs font-medium text-amber-700 uppercase tracking-wide mb-1">
                                         Token 用量
                                     </div>
@@ -152,7 +152,7 @@ export default function AboutCN() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 p-4 text-center">
+                                <div className="rounded-none bg-gradient-to-br from-amber-100 to-orange-100 p-4 text-center">
                                     <div className="text-xs font-medium text-amber-700 uppercase tracking-wide mb-1">
                                         每日请求数
                                     </div>
@@ -208,7 +208,7 @@ export default function AboutCN() {
                                 </p>
                                 <a
                                     href="mailto:me@jiang.jp"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-none bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
                                 >
                                     联系我
                                 </a>
@@ -436,7 +436,7 @@ export default function AboutCN() {
                     <div className="mt-12 text-center">
                         <Link
                             href="/"
-                            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-none font-semibold hover:bg-blue-700 transition-colors"
                         >
                             打开编辑器
                         </Link>

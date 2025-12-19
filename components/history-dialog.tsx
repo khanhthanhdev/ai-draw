@@ -60,7 +60,7 @@ export function HistoryDialog({
                         {diagramHistory.map((item, index) => (
                             <div
                                 key={index}
-                                className={`border rounded-md p-2 cursor-pointer hover:border-primary transition-colors ${
+                                className={`border rounded-none p-2 cursor-pointer hover:border-primary transition-colors ${
                                     selectedIndex === index
                                         ? "border-primary ring-2 ring-primary"
                                         : ""

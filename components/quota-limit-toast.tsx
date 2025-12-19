@@ -34,12 +34,12 @@ export function QuotaLimitToast({
             aria-live="polite"
             tabIndex={0}
             onKeyDown={handleKeyDown}
-            className="relative w-[400px] overflow-hidden rounded-xl border border-border/50 bg-card p-5 shadow-soft animate-message-in"
+            className="relative w-[400px] overflow-hidden rounded-none border border-border/50 bg-card p-5 shadow-soft animate-message-in"
         >
             {/* Close button */}
             <button
                 onClick={onDismiss}
-                className="absolute right-3 top-3 p-1.5 rounded-full text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors"
+                className="absolute right-3 top-3 p-1.5 rounded-none text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors"
                 aria-label="Dismiss"
             >
                 <X className="w-4 h-4" />
@@ -47,7 +47,7 @@ export function QuotaLimitToast({
 
             {/* Title row with icon */}
             <div className="flex items-center gap-2.5 mb-3 pr-6">
-                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 rounded-none bg-accent flex items-center justify-center">
                     <Coffee
                         className="w-4 h-4 text-accent-foreground"
                         strokeWidth={2}
@@ -58,7 +58,7 @@ export function QuotaLimitToast({
                         ? "Daily Token Limit Reached"
                         : "Daily Quota Reached"}
                 </h3>
-                <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-muted text-muted-foreground">
+                <span className="px-2 py-0.5 text-xs font-medium rounded-none bg-muted text-muted-foreground">
                     {isTokenLimit
                         ? `${formatNumber(used)}/${formatNumber(limit)} tokens`
                         : `${used}/${limit}`}
@@ -95,7 +95,7 @@ export function QuotaLimitToast({
                     href="https://github.com/DayuanJiang/next-ai-draw-io"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-none bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                     <FaGithub className="w-3.5 h-3.5" />
                     Self-host
@@ -104,7 +104,7 @@ export function QuotaLimitToast({
                     href="https://github.com/sponsors/DayuanJiang"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-foreground hover:bg-muted transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-none border border-border text-foreground hover:bg-muted transition-colors"
                 >
                     <Coffee className="w-3.5 h-3.5" />
                     Sponsor

@@ -111,7 +111,7 @@ export function SaveDialog({
                                 onFocus={(e) => e.target.select()}
                                 className="rounded-r-none border-r-0 focus-visible:z-10"
                             />
-                            <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-input bg-muted text-sm text-muted-foreground font-mono">
+                            <span className="inline-flex items-center px-3 rounded-none border border-l-0 border-input bg-muted text-sm text-muted-foreground font-mono">
                                 {currentFormat?.extension || ".drawio"}
                             </span>
                         </div>

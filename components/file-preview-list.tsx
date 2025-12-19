@@ -83,14 +83,14 @@ export function FilePreviewList({
 
     return (
         <>
-            <div className="flex flex-wrap gap-2 mt-2 p-2 bg-muted/50 rounded-md">
+            <div className="flex flex-wrap gap-2 mt-2 p-2 bg-muted/50 rounded-none">
                 {files.map((file, index) => {
                     const imageUrl = imageUrls.get(file) || null
                     const pdfInfo = pdfData.get(file)
                     return (
                         <div key={file.name + index} className="relative group">
                             <div
-                                className={`w-20 h-20 border rounded-md overflow-hidden bg-muted ${
+                                className={`w-20 h-20 border rounded-none overflow-hidden bg-muted ${
                                     file.type.startsWith("image/") && imageUrl
                                         ? "cursor-pointer"
                                         : ""
@@ -146,7 +146,7 @@ export function FilePreviewList({
                             <button
                                 type="button"
                                 onClick={() => onRemoveFile(file)}
-                                className="absolute -top-2 -right-2 bg-destructive rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 bg-destructive rounded-none p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                                 aria-label="Remove file"
                             >
                                 <X className="h-3 w-3" />
@@ -163,7 +163,7 @@ export function FilePreviewList({
                     onClick={() => setSelectedImage(null)}
                 >
                     <button
-                        className="absolute top-4 right-4 z-10 bg-white rounded-full p-2 hover:bg-gray-200 transition-colors"
+                        className="absolute top-4 right-4 z-10 bg-white rounded-none p-2 hover:bg-gray-200 transition-colors"
                         onClick={() => setSelectedImage(null)}
                         aria-label="Close"
                     >

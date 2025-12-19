@@ -300,7 +300,7 @@ export function ChatInput({
             onSubmit={onSubmit}
             className={`w-full transition-all duration-200 ${
                 isDragging
-                    ? "ring-2 ring-primary ring-offset-2 rounded-2xl"
+                    ? "ring-2 ring-primary ring-offset-2 rounded-none"
                     : ""
             }`}
             onDragOver={handleDragOver}
@@ -319,7 +319,7 @@ export function ChatInput({
             )}
 
             {/* Input container */}
-            <div className="relative rounded-2xl border border-border bg-background shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all duration-200">
+            <div className="relative rounded-none border border-border bg-background shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all duration-200">
                 <Textarea
                     ref={textareaRef}
                     value={input}
@@ -450,7 +450,7 @@ export function ChatInput({
                             type="submit"
                             disabled={isDisabled || !input.trim()}
                             size="sm"
-                            className="h-8 px-4 rounded-xl font-medium shadow-sm"
+                            className="h-8 px-4 rounded-none font-medium shadow-sm"
                             aria-label={
                                 isDisabled ? "Sending..." : "Send message"
                             }

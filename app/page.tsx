@@ -194,7 +194,7 @@ export default function Home() {
                             mouseOverDrawioRef.current = false
                         }}
                     >
-                        <div className="h-full rounded-xl overflow-hidden shadow-soft-lg border border-border/30">
+                        <div className="h-full rounded-none overflow-hidden shadow-soft-lg border border-border/30">
                             {isLoaded ? (
                                 <DrawIoEmbed
                                     key={`${drawioUi}-${darkMode}`}
@@ -214,7 +214,7 @@ export default function Home() {
                                 />
                             ) : (
                                 <div className="h-full w-full flex items-center justify-center bg-background">
-                                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+                                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-none" />
                                 </div>
                             )}
                         </div>
