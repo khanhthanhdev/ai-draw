@@ -33,6 +33,8 @@ interface DiagramContextType {
 
 const DiagramContext = createContext<DiagramContextType | undefined>(undefined)
 
+const DEFAULT_DIAGRAM_PATH = "/scan_qr.drawio"
+
 export function DiagramProvider({ children }: { children: React.ReactNode }) {
     const [chartXML, setChartXML] = useState<string>("")
     const [latestSvg, setLatestSvg] = useState<string>("")
@@ -76,17 +78,36 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         if (hasDiagramRestoredRef.current) return
         hasDiagramRestoredRef.current = true
 
-        try {
-            const savedDiagramXml = localStorage.getItem(
-                STORAGE_DIAGRAM_XML_KEY,
-            )
-            if (savedDiagramXml) {
-                // Skip validation for trusted saved diagrams
-                loadDiagram(savedDiagramXml, true)
+        const restoreDiagram = async () => {
+            try {
+                const savedDiagramXml = localStorage.getItem(
+                    STORAGE_DIAGRAM_XML_KEY,
+                )
+                if (savedDiagramXml) {
+                    // Skip validation for trusted saved diagrams
+                    loadDiagram(savedDiagramXml, true)
+                    return
+                }
+
+                const response = await fetch(DEFAULT_DIAGRAM_PATH)
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load default diagram (${response.status})`,
+                    )
+                }
+                const defaultXml = await response.text()
+                if (defaultXml) {
+                    loadDiagram(defaultXml, true)
+                }
+            } catch (error) {
+                console.error(
+                    "Failed to restore diagram from storage or default:",
+                    error,
+                )
             }
-        } catch (error) {
-            console.error("Failed to restore diagram from localStorage:", error)
         }
+
+        restoreDiagram()
 
         // Allow saving after restore is complete
         setTimeout(() => {
