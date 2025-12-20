@@ -1,13 +1,6 @@
 "use client"
 
-import {
-    Cloud,
-    FileText,
-    GitBranch,
-    Palette,
-    Terminal,
-    Zap,
-} from "lucide-react"
+import { Cloud, FileText, GitBranch, Palette, Zap } from "lucide-react"
 
 interface ExampleCardProps {
     icon: React.ReactNode

@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { FaGithub } from "react-icons/fa"
 import { PricingSection } from "@/components/pricing-section"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { FadeIn } from "@/components/ui/fade-in"

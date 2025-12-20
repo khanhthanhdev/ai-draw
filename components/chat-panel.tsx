@@ -15,7 +15,6 @@ import Link from "next/link"
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
-import { FaGithub } from "react-icons/fa"
 import { Toaster, toast } from "sonner"
 import {
     ModelSelector,
@@ -26,7 +25,6 @@ import {
     ModelSelectorItem,
     ModelSelectorList,
     ModelSelectorLogo,
-    ModelSelectorLogoGroup,
     ModelSelectorName,
     ModelSelectorSeparator,
     ModelSelectorTrigger,

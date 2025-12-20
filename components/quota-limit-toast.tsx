@@ -3,7 +3,6 @@
 import { Coffee, X } from "lucide-react"
 import Link from "next/link"
 import type React from "react"
-import { FaGithub } from "react-icons/fa"
 
 interface QuotaLimitToastProps {
     type?: "request" | "token"
