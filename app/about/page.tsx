@@ -5,6 +5,7 @@ import { FaGithub } from "react-icons/fa"
 import { PricingSection } from "@/components/pricing-section"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { FadeIn } from "@/components/ui/fade-in"
+import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects"
 
 export const metadata: Metadata = {
     title: "About - Clarify",
@@ -234,71 +235,9 @@ export default function About() {
                             </div>
                         </div>
                     </FadeIn>
-                    <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <FadeIn delay={0.2} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-1 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Cloud architecture
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Generate AWS, GCP, and Azure diagrams with
-                                    service icons and clean grouping.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-1/10 px-3 py-1">
-                                        AWS
-                                    </span>
-                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                        GCP
-                                    </span>
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Azure
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                        <FadeIn delay={0.3} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-2 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Product workflows
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Outline onboarding, approvals, and data
-                                    pipelines in minutes.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                        Flows
-                                    </span>
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Swimlanes
-                                    </span>
-                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                        Journey maps
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                        <FadeIn delay={0.4} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-3 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Diagram ops
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Save every revision, roll back changes, and
-                                    keep your context intact.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Version history
-                                    </span>
-                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                        Export ready
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                    </div>
+                    <FadeIn delay={0.2} className="mt-8">
+                        <FeaturesSectionWithHoverEffects />
+                    </FadeIn>
                 </section>
 
                 <section className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">

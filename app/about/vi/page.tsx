@@ -5,6 +5,7 @@ import { FaGithub } from "react-icons/fa"
 import { PricingSection } from "@/components/pricing-section"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { FadeIn } from "@/components/ui/fade-in"
+import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects"
 
 export const metadata: Metadata = {
     title: "Giới thiệu - Clarify",
@@ -232,71 +233,9 @@ export default function AboutVI() {
                             </div>
                         </div>
                     </FadeIn>
-                    <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <FadeIn delay={0.2} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-1 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Kiến trúc đám mây
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Tạo sơ đồ AWS, GCP và Azure với icon dịch vụ
-                                    và nhóm rõ ràng.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-1/10 px-3 py-1">
-                                        AWS
-                                    </span>
-                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                        GCP
-                                    </span>
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Azure
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                        <FadeIn delay={0.3} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-2 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Quy trình sản phẩm
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Phác thảo onboarding, phê duyệt và pipeline
-                                    dữ liệu trong vài phút.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-2/10 px-3 py-1">
-                                        Luồng
-                                    </span>
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Swimlane
-                                    </span>
-                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                        Journey map
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                        <FadeIn delay={0.4} className="h-full">
-                            <div className="h-full border border-border border-t-4 border-t-chart-3 bg-card p-6">
-                                <h3 className="text-lg font-semibold">
-                                    Vận hành sơ đồ
-                                </h3>
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Lưu mọi phiên bản, hoàn tác thay đổi và giữ
-                                    nguyên ngữ cảnh.
-                                </p>
-                                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    <span className="border border-border bg-chart-3/10 px-3 py-1">
-                                        Lịch sử phiên bản
-                                    </span>
-                                    <span className="border border-border bg-chart-4/10 px-3 py-1">
-                                        Sẵn sàng xuất
-                                    </span>
-                                </div>
-                            </div>
-                        </FadeIn>
-                    </div>
+                    <FadeIn delay={0.2} className="mt-8">
+                        <FeaturesSectionWithHoverEffects />
+                    </FadeIn>
                 </section>
 
                 <section className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
