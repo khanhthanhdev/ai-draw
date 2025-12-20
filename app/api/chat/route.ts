@@ -706,6 +706,18 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
             providerOptions: runtimeProviderOptions,
         }), // Pass sanitized options
         tools,
+        experimental_telemetry: getTelemetryConfig({
+            sessionId: validSessionId,
+            userId: userId,
+        }),
+        onFinish: ({ text, usage }) => {
+            const anyUsage = usage as any
+            setTraceOutput(text, {
+                promptTokens: anyUsage.promptTokens ?? anyUsage.inputTokens,
+                completionTokens:
+                    anyUsage.completionTokens ?? anyUsage.outputTokens,
+            })
+        },
     })
 
     return result.toUIMessageStreamResponse({
