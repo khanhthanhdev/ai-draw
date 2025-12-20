@@ -1,206 +1,105 @@
 "use client"
 
-import { Cloud, FileText, GitBranch, Palette, Zap } from "lucide-react"
+import { Sparkles } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
-interface ExampleCardProps {
-    icon: React.ReactNode
-    title: string
-    description: string
-    onClick: () => void
-    isNew?: boolean
-}
+const TOUR_PROMPT_STORAGE_KEY = "next-ai-draw-io-tour-dismissed"
+const DEMO_PROMPT =
+    "Create an animated flowchart illustrating the Agile Scrum Sprint Workflow. The animation should visually represent the flow of work and the timing of events."
 
-function ExampleCard({
-    icon,
-    title,
-    description,
-    onClick,
-    isNew,
-}: ExampleCardProps) {
-    return (
-        <button
-            onClick={onClick}
-            className={`group w-full text-left p-4 rounded-none border bg-card hover:bg-accent/50 hover:border-primary/30 transition-all duration-200 hover:shadow-sm ${
-                isNew
-                    ? "border-primary/40 ring-1 ring-primary/20"
-                    : "border-border/60"
-            }`}
-        >
-            <div className="flex items-start gap-3">
-                <div
-                    className={`w-9 h-9 rounded-none flex items-center justify-center shrink-0 transition-colors ${
-                        isNew
-                            ? "bg-primary/20 group-hover:bg-primary/25"
-                            : "bg-primary/10 group-hover:bg-primary/15"
-                    }`}
-                >
-                    {icon}
-                </div>
-                <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                            {title}
-                        </h3>
-                        {isNew && (
-                            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-primary text-primary-foreground rounded">
-                                NEW
-                            </span>
-                        )}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                        {description}
-                    </p>
-                </div>
-            </div>
-        </button>
-    )
+interface ExamplePanelProps {
+    setInput: (input: string) => void
+    setFiles: (files: File[]) => void
+    onStartTour?: () => void
 }
 
 export default function ExamplePanel({
     setInput,
     setFiles,
-}: {
-    setInput: (input: string) => void
-    setFiles: (files: File[]) => void
-}) {
-    const handleReplicateFlowchart = async () => {
-        setInput("Replicate this flowchart.")
+    onStartTour,
+}: ExamplePanelProps) {
+    const [isDismissed, setIsDismissed] = useState(() => {
+        if (typeof window === "undefined") return false
+        return localStorage.getItem(TOUR_PROMPT_STORAGE_KEY) === "true"
+    })
 
-        try {
-            const response = await fetch("/example.png")
-            const blob = await response.blob()
-            const file = new File([blob], "example.png", { type: "image/png" })
-            setFiles([file])
-        } catch (error) {
-            console.error("Error loading example image:", error)
-        }
+    const handleStartTour = () => {
+        setInput(DEMO_PROMPT)
+        setFiles([])
+        localStorage.setItem(TOUR_PROMPT_STORAGE_KEY, "true")
+        setIsDismissed(true)
+        onStartTour?.()
     }
 
-    const handleReplicateArchitecture = async () => {
-        setInput("Replicate this in aws style")
-
-        try {
-            const response = await fetch("/architecture.png")
-            const blob = await response.blob()
-            const file = new File([blob], "architecture.png", {
-                type: "image/png",
-            })
-            setFiles([file])
-        } catch (error) {
-            console.error("Error loading architecture image:", error)
-        }
+    const handleDismiss = () => {
+        localStorage.setItem(TOUR_PROMPT_STORAGE_KEY, "true")
+        setIsDismissed(true)
     }
 
-    const handlePdfExample = async () => {
-        setInput("Summarize this paper as a diagram")
-
-        try {
-            const response = await fetch("/chain-of-thought.txt")
-            const blob = await response.blob()
-            const file = new File([blob], "chain-of-thought.txt", {
-                type: "text/plain",
-            })
-            setFiles([file])
-        } catch (error) {
-            console.error("Error loading text file:", error)
-        }
+    if (isDismissed) {
+        return (
+            <div className="py-8 px-3 animate-fade-in text-center">
+                <p className="text-sm text-muted-foreground">
+                    Ready to build a diagram? Type a prompt to begin.
+                </p>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    className="mt-3 rounded-none text-xs"
+                    onClick={handleStartTour}
+                >
+                    Start Product Tour
+                </Button>
+            </div>
+        )
     }
 
     return (
-        <div className="py-6 px-2 animate-fade-in">
-            {/* MCP Server Notice */}
-            {/* <a
-                href="https://github.com/DayuanJiang/next-ai-draw-io/tree/main/packages/mcp-server"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block mb-4 p-3 rounded-none bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-colors group"
-            >
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-none bg-purple-500/20 flex items-center justify-center shrink-0">
-                        <Terminal className="w-4 h-4 text-purple-500" />
-                    </div>
-                    <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-foreground group-hover:text-purple-500 transition-colors">
-                                MCP Server
-                            </span>
-                            <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-purple-500 text-white rounded">
-                                PREVIEW
-                            </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Use in Claude Desktop, VS Code & Cursor
-                        </p>
-                    </div>
-                </div>
-            </a> */}
-
-            {/* Welcome section */}
+        <div className="py-8 px-3 animate-fade-in">
             <div className="text-center mb-6">
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-none border border-primary/20 bg-primary/10">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                </div>
                 <h2 className="text-lg font-semibold text-foreground mb-2">
-                    Create diagrams with AI
+                    Want a Product Tour?
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                    Describe what you want to create or upload an image to
-                    replicate
+                    We will guide you through the editor controls step by step.
                 </p>
             </div>
 
-            {/* Examples grid */}
-            <div className="space-y-3">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-1">
-                    Quick Examples
+            <div className="rounded-none border border-border/60 bg-card p-4 shadow-soft">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Tour highlights
+                </p>
+                <ul className="mt-2 text-xs text-muted-foreground list-disc list-inside space-y-1">
+                    <li>Prompt input and uploads</li>
+                    <li>Enhanced prompt and model selection</li>
+                    <li>Send, download output, and start a new chat</li>
+                </ul>
+                <p className="mt-3 text-[11px] text-muted-foreground/70">
+                    Demo uses a cached Agile Scrum flowchart prompt for instant
+                    results.
                 </p>
 
-                <div className="grid gap-2">
-                    <ExampleCard
-                        icon={<FileText className="w-4 h-4 text-primary" />}
-                        title="Paper to Diagram"
-                        description="Upload .pdf, .txt, .md, .json, .csv, .py, .js, .ts and more"
-                        onClick={handlePdfExample}
-                        isNew
-                    />
-
-                    <ExampleCard
-                        icon={<Zap className="w-4 h-4 text-primary" />}
-                        title="Animated Diagram"
-                        description="Draw a transformer architecture with animated connectors"
-                        onClick={() => {
-                            setInput(
-                                "Give me a **animated connector** diagram of transformer's architecture",
-                            )
-                            setFiles([])
-                        }}
-                    />
-
-                    <ExampleCard
-                        icon={<Cloud className="w-4 h-4 text-primary" />}
-                        title="AWS Architecture"
-                        description="Create a cloud architecture diagram with AWS icons"
-                        onClick={handleReplicateArchitecture}
-                    />
-
-                    <ExampleCard
-                        icon={<GitBranch className="w-4 h-4 text-primary" />}
-                        title="Replicate Flowchart"
-                        description="Upload and replicate an existing flowchart"
-                        onClick={handleReplicateFlowchart}
-                    />
-
-                    <ExampleCard
-                        icon={<Palette className="w-4 h-4 text-primary" />}
-                        title="Creative Drawing"
-                        description="Draw something fun and creative"
-                        onClick={() => {
-                            setInput("Draw a cat for me")
-                            setFiles([])
-                        }}
-                    />
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <Button
+                        type="button"
+                        className="rounded-none font-semibold"
+                        onClick={handleStartTour}
+                    >
+                        Start Product Tour
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="rounded-none text-foreground/70"
+                        onClick={handleDismiss}
+                    >
+                        No thanks
+                    </Button>
                 </div>
-
-                <p className="text-[11px] text-muted-foreground/60 text-center mt-4">
-                    Examples are cached for instant response
-                </p>
             </div>
         </div>
     )

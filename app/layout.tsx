@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google"
 import { DiagramProvider } from "@/contexts/diagram-context"
 
+import "driver.js/dist/driver.css"
 import "./globals.css"
 
 const plusJakarta = Plus_Jakarta_Sans({

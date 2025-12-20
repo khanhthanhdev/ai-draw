@@ -32,6 +32,7 @@ import {
 } from "@/components/ai-elements/model-selector"
 import { ButtonWithTooltip } from "@/components/button-with-tooltip"
 import { ChatInput } from "@/components/chat-input"
+import { useEditorTour } from "@/components/editor-tour"
 import { ResetWarningModal } from "@/components/reset-warning-modal"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { Button } from "@/components/ui/button"
@@ -136,6 +137,7 @@ export default function ChatPanel({
         chartXML,
         clearDiagram,
     } = useDiagram()
+    const { startTour } = useEditorTour()
 
     const onFetchChart = (saveToHistory = true) => {
         return Promise.race([
@@ -1450,6 +1452,7 @@ Continue from EXACTLY where you stopped.`,
                             variant="ghost"
                             size="sm"
                             onClick={() => setShowNewChatDialog(true)}
+                            data-tour="new-chat"
                             className="hover:bg-accent transition-colors gap-2 px-2"
                         >
                             <MessageSquarePlus
@@ -1500,6 +1503,7 @@ Continue from EXACTLY where you stopped.`,
                     onRegenerate={handleRegenerate}
                     status={status}
                     onEditMessage={handleEditMessage}
+                    onStartTour={startTour}
                 />
             </main>
 
@@ -1526,6 +1530,7 @@ Continue from EXACTLY where you stopped.`,
                             <ModelSelectorTrigger asChild>
                                 <Button
                                     variant="outline"
+                                    data-tour="model-selector"
                                     className={`h-9 ${isMobile ? "w-full" : "min-w-[220px]"} justify-between gap-2 rounded-none border-2 border-border/70 bg-background px-3 text-xs font-semibold tracking-wide shadow-none hover:bg-accent/50`}
                                 >
                                     {selectedModelData?.provider ? (

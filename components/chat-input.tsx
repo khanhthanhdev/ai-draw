@@ -340,6 +340,7 @@ export function ChatInput({
                     placeholder="Describe your diagram or upload a file..."
                     disabled={isDisabled}
                     aria-label="Chat input"
+                    data-tour="prompt-input"
                     className="min-h-[60px] max-h-[200px] resize-none border-0 bg-transparent px-4 py-3 text-[15px] font-medium text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/80"
                 />
 
@@ -417,6 +418,7 @@ export function ChatInput({
                             onClick={() => setShowSaveDialog(true)}
                             disabled={isDisabled}
                             tooltipContent="Save diagram"
+                            data-tour="download-output"
                             className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             <Download className="h-4 w-4" />
@@ -440,6 +442,7 @@ export function ChatInput({
                             onClick={triggerFileInput}
                             disabled={isDisabled}
                             tooltipContent="Upload file (image, PDF, text)"
+                            data-tour="upload-files"
                             className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             <ImageIcon className="h-4 w-4" />
@@ -464,6 +467,7 @@ export function ChatInput({
                                 isDisabled || isEnhancingPrompt || !input.trim()
                             }
                             tooltipContent="Enhance Prompt"
+                            data-tour="enhance-prompt"
                             className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             {isEnhancingPrompt ? (
@@ -502,6 +506,7 @@ export function ChatInput({
                             type="submit"
                             disabled={isDisabled || !input.trim()}
                             size="sm"
+                            data-tour="send-button"
                             className="h-8 px-5 rounded-none font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
                             aria-label={
                                 isDisabled ? "Sending..." : "Send message"

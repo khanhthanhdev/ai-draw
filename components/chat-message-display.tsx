@@ -252,6 +252,7 @@ interface ChatMessageDisplayProps {
     sessionId?: string
     onRegenerate?: (messageIndex: number) => void
     onEditMessage?: (messageIndex: number, newText: string) => void
+    onStartTour?: () => void
     status?: "streaming" | "submitted" | "idle" | "error" | "ready"
 }
 
@@ -264,6 +265,7 @@ export function ChatMessageDisplay({
     sessionId,
     onRegenerate,
     onEditMessage,
+    onStartTour,
     status = "idle",
 }: ChatMessageDisplayProps) {
     const { chartXML, loadDiagram: onDisplayChart } = useDiagram()
@@ -823,7 +825,11 @@ export function ChatMessageDisplay({
     return (
         <ScrollArea className="h-full w-full scrollbar-thin">
             {messages.length === 0 ? (
-                <ExamplePanel setInput={setInput} setFiles={setFiles} />
+                <ExamplePanel
+                    setInput={setInput}
+                    setFiles={setFiles}
+                    onStartTour={onStartTour}
+                />
             ) : (
                 <div className="py-4 px-4 space-y-4">
                     {messages.map((message, messageIndex) => {
