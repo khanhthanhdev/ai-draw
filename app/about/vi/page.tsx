@@ -79,7 +79,7 @@ export default function AboutVI() {
             </header>
 
             <main className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
-                <section className="relative left-1/2 right-1/2 mt-10 w-screen -translate-x-1/2 border-y border-border overflow-hidden">
+                <section className="relative left-1/2 right-1/2  w-screen -translate-x-1/2 border-y border-border overflow-hidden">
                     <AnimatedGridPattern
                         numSquares={30}
                         maxOpacity={0.1}
@@ -168,13 +168,13 @@ export default function AboutVI() {
                                     </span>
                                 </div>
                                 <p className="mt-4 border border-border bg-card p-4 text-sm text-muted-foreground">
-                                    Xây dựng kiến trúc AWS với web client, API
-                                    gateway, workers và data lake. Thêm
-                                    connector động cho luồng nạp dữ liệu.
+                                    Tạo sơ đồ chi tiết cho kiến trúc Retrieval
+                                    Augmented Generation sẵn sàng sản xuất cho
+                                    ứng dụng chat.
                                 </p>
-                                <div className="mt-4 border border-border bg-card">
+                                <div className="mt-4 border border-border bg-neutral-950">
                                     <Image
-                                        src="/aws_demo.svg"
+                                        src="/rag_d.svg"
                                         alt="Sơ đồ kiến trúc AWS do AI tạo"
                                         width={520}
                                         height={360}
@@ -350,61 +350,79 @@ export default function AboutVI() {
                         </Link>
                     </FadeIn>
                     <div className="mt-8 grid gap-4 md:grid-cols-2">
-                        <FadeIn delay={0.2}>
-                            <div className="border border-border border-t-4 border-t-chart-1 bg-card p-4">
-                                <Image
-                                    src="/animated_connectors.svg"
-                                    alt="Kiến trúc transformer với connector động"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Connector động giúp trình bày rõ luồng dữ
-                                    liệu.
+                        <FadeIn delay={0.2} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-1 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/resnet50.svg"
+                                        alt="Kiến trúc ResNet50"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Tạo sơ đồ kiến trúc chi tiết cho mô hình
+                                    ResNet50.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.3}>
-                            <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
-                                <Image
-                                    src="/gcp_demo.svg"
-                                    alt="Sơ đồ kiến trúc GCP"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Hạ tầng GCP với nhóm dịch vụ gọn gàng.
+                        <FadeIn delay={0.3} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-2 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/gcp_ecom.svg"
+                                        alt="Sơ đồ kiến trúc GCP"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Tạo sơ đồ kiến trúc hệ thống cho Hệ thống Đề
+                                    xuất Thương mại Điện tử Cá nhân hóa, tập
+                                    trung vào trường hợp sử dụng "Sản phẩm bạn
+                                    có thể thích" được hỗ trợ bởi Vertex AI
+                                    Search cho Bán lẻ.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.4}>
-                            <div className="border border-border border-t-4 border-t-chart-3 bg-card p-4">
-                                <Image
-                                    src="/azure_demo.svg"
-                                    alt="Sơ đồ kiến trúc Azure"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Bố cục Azure rõ ràng cho review nhanh.
+                        <FadeIn delay={0.4} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-3 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/auth.svg"
+                                        alt="Luồng xác thực React"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Tạo sơ đồ quy trình chi tiết minh họa quy
+                                    trình xác thực và kiểm tra đăng ký cho ứng
+                                    dụng SaaS serverless được xây dựng với AWS
+                                    và React.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.5}>
-                            <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
-                                <Image
-                                    src="/cat_demo.svg"
-                                    alt="Bản phác thảo con mèo"
-                                    width={320}
-                                    height={320}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Vẽ phác thảo, flowchart và nhiều loại sơ đồ
-                                    khác.
+                        <FadeIn delay={0.5} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-4 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/agile_scrum.svg"
+                                        alt="Quy trình Agile Scrum Sprint"
+                                        width={320}
+                                        height={320}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Tạo sơ đồ quy trình động minh họa Quy trình
+                                    Agile Scrum Sprint. Hoạt ảnh thể hiện trực
+                                    quan luồng công việc và thời gian của các sự
+                                    kiện.
                                 </p>
                             </div>
                         </FadeIn>

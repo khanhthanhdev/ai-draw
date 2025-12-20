@@ -80,7 +80,7 @@ export default function About() {
             </header>
 
             <main className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
-                <section className="relative left-1/2 right-1/2 mt-10 w-screen -translate-x-1/2 border-y border-border overflow-hidden">
+                <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-y border-border overflow-hidden">
                     <AnimatedGridPattern
                         numSquares={30}
                         maxOpacity={0.1}
@@ -142,7 +142,7 @@ export default function About() {
                                         Providers
                                     </p>
                                     <p className="mt-2 text-2xl font-semibold">
-                                        8+ models
+                                        6+ models
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         bring your own key
@@ -170,13 +170,14 @@ export default function About() {
                                     </span>
                                 </div>
                                 <p className="mt-4 border border-border bg-card p-4 text-sm text-muted-foreground">
-                                    Build an AWS architecture with a web client,
-                                    API gateway, workers, and a data lake. Add
-                                    animated connectors for the ingestion flow.
+                                    Create a detailed diagram for a
+                                    production-ready Retrieval Augmented
+                                    Generation architecture for a chat
+                                    application.
                                 </p>
-                                <div className="mt-4 border border-border bg-card">
+                                <div className="mt-4 border border-border bg-neutral-950">
                                     <Image
-                                        src="/aws_demo.svg"
+                                        src="/rag_d.svg"
                                         alt="AI generated AWS architecture diagram"
                                         width={520}
                                         height={360}
@@ -354,62 +355,80 @@ export default function About() {
                         </Link>
                     </FadeIn>
                     <div className="mt-8 grid gap-4 md:grid-cols-2">
-                        <FadeIn delay={0.2}>
-                            <div className="border border-border border-t-4 border-t-chart-1 bg-card p-4">
-                                <Image
-                                    src="/animated_connectors.svg"
-                                    alt="Transformer architecture with animated connectors"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Animated transformer connectors for clear
-                                    data flow storytelling.
+                        <FadeIn delay={0.2} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-1 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/resnet50.svg"
+                                        alt="ResNet50 model architecture diagram"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Create a detailed architecture diagram for
+                                    the ResNet50 model.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.3}>
-                            <div className="border border-border border-t-4 border-t-chart-2 bg-card p-4">
-                                <Image
-                                    src="/gcp_demo.svg"
-                                    alt="GCP architecture diagram"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    GCP infrastructure with concise service
-                                    grouping.
+                        <FadeIn delay={0.3} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-2 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/gcp_ecom.svg"
+                                        alt="GCP architecture diagram"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Create a system architecture diagram for a
+                                    Personalized E-Commerce Recommendation
+                                    System, focusing on the "Products you might
+                                    like" use case powered by Vertex AI Search
+                                    for Retail.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.4}>
-                            <div className="border border-border border-t-4 border-t-chart-3 bg-card p-4">
-                                <Image
-                                    src="/azure_demo.svg"
-                                    alt="Azure architecture diagram"
-                                    width={520}
-                                    height={360}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Azure layout for quick stakeholder reviews.
+                        <FadeIn delay={0.4} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-3 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/auth.svg"
+                                        alt="React"
+                                        width={520}
+                                        height={360}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Create a detailed process flow diagram
+                                    illustrating the authentication and
+                                    subscription checking workflow for a
+                                    serverless SaaS application built with AWS
+                                    and React.
                                 </p>
                             </div>
                         </FadeIn>
-                        <FadeIn delay={0.5}>
-                            <div className="border border-border border-t-4 border-t-chart-4 bg-card p-4">
-                                <Image
-                                    src="/cat_demo.svg"
-                                    alt="Sketch of a cat"
-                                    width={320}
-                                    height={320}
-                                    className="h-auto w-full"
-                                />
-                                <p className="mt-4 text-sm text-muted-foreground">
-                                    Draw sketches, flowcharts, and everything in
-                                    between.
+                        <FadeIn delay={0.5} className="h-full">
+                            <div className="flex h-full flex-col border border-border border-t-4 border-t-chart-4 bg-card p-4">
+                                <div className="bg-neutral-900">
+                                    <Image
+                                        src="/agile_scrum.svg"
+                                        alt="Agile Scrum Sprint Workflow"
+                                        width={320}
+                                        height={320}
+                                        className="h-auto w-full"
+                                    />
+                                </div>
+                                <p className="mt-auto pt-4 text-sm text-muted-foreground">
+                                    Create an animated flowchart illustrating
+                                    the Agile Scrum Sprint Workflow. The
+                                    animation should visually represent the flow
+                                    of work and the timing of events.
                                 </p>
                             </div>
                         </FadeIn>
@@ -434,7 +453,7 @@ export default function About() {
                         },
                         {
                             name: "Starter",
-                            price: "$3",
+                            price: "$5",
                             description: "For occasional use.",
                             features: ["100 credits"],
                             buttonText: "Buy credits",
@@ -442,7 +461,7 @@ export default function About() {
                         },
                         {
                             name: "Pro",
-                            price: "$10",
+                            price: "$20",
                             description: "For power users.",
                             features: ["500 credits"],
                             buttonText: "Buy credits",
