@@ -1,10 +1,13 @@
+import { google } from "@ai-sdk/google"
 import {
     APICallError,
     convertToModelMessages,
     createUIMessageStream,
     createUIMessageStreamResponse,
+    generateText,
     InvalidToolInputError,
     LoadAPIKeyError,
+    type ProviderMetadata,
     stepCountIs,
     streamText,
 } from "ai"
@@ -415,8 +418,221 @@ ${userInputText}
             }),
         },
     ]
+    // Google Search Grounding Conflict Resolution:
+    // The Google provider does not support mixing "provider-defined tools" (googleSearch, thinking) with standard function tools.
+    // We must rely on an explicit toggle (or heuristic fallback) to swap toolsets:
+    // - "Search Mode": Enable Google Search & Thinking. Disable Diagram tools.
+    // - "Diagram Mode": Enable Diagram tools. Disable Google Search & Thinking.
 
-    const allMessages = [...systemMessages, ...enhancedMessages]
+    const isGoogleModel =
+        modelId.includes("gemini") || modelId.includes("google")
+
+    // Check for explicit search toggle from client
+    const searchEnabledHeader = req.headers.get("x-search-enabled")
+    const explicitSearchMode = searchEnabledHeader === "true"
+    const explicitDiagramMode = searchEnabledHeader === "false"
+
+    // Fallback heuristic if no header (legacy behavior)
+    const heuristicSearchIntent =
+        userInputText.toLowerCase().includes("search") ||
+        userInputText.toLowerCase().includes("google") ||
+        userInputText.toLowerCase().includes("latest") ||
+        userInputText.toLowerCase().includes("news") ||
+        userInputText.toLowerCase().includes("current event") ||
+        userInputText.toLowerCase().includes("weather") ||
+        userInputText.toLowerCase().includes("stock price")
+
+    // Decision logic:
+    // 1. If explicit header exists, use it.
+    // 2. Else use heuristic.
+    // 3. MUST be a Google model to enable search.
+    const enableGoogleSearch =
+        isGoogleModel &&
+        (explicitSearchMode ||
+            (!explicitDiagramMode &&
+                !searchEnabledHeader &&
+                heuristicSearchIntent))
+
+    console.log(
+        `[route.ts] Tool Selection: GoogleModel=${isGoogleModel}, SearchHeader=${searchEnabledHeader} => EnableSearch=${enableGoogleSearch}`,
+    )
+
+    // TWO-STEP WORKFLOW: Search-then-Diagram
+    // If search mode is explicitly enabled, we run a two-step orchestration:
+    // Step 1: Use gemini-2.5-flash-lite with google_search to gather and summarize info
+    // Step 2: Use the user's selected model with diagram tools + the summary as context
+
+    let searchSummary: string | null = null
+    let searchGroundingMetadata: any = null
+
+    if (explicitSearchMode) {
+        console.log(
+            `[route.ts] Search Mode: Running Step 1 (Search with gemini-2.5-flash-lite)...`,
+        )
+        try {
+            const searchResult = await generateText({
+                model: google("gemini-2.5-flash-lite"),
+                tools: {
+                    google_search: google.tools.googleSearch({}),
+                } as any, // Type assertion needed for provider-defined tools
+                prompt: `Search for information about: "${userInputText}"
+
+Please search and provide a comprehensive summary of the key findings in well-organized bullet points or sections. 
+Focus on facts, data, and important details that would be useful for creating a visual diagram or infographic.
+Be thorough but concise.`,
+            })
+
+            searchSummary = searchResult.text
+            searchGroundingMetadata =
+                searchResult.providerMetadata?.google?.groundingMetadata
+            console.log(
+                `[route.ts] Search Step Complete. Summary length: ${searchSummary?.length || 0} chars`,
+            )
+        } catch (searchError) {
+            console.error(`[route.ts] Search Step Failed:`, searchError)
+            // Continue without search summary - the diagram model will work with what it has
+            searchSummary = `[Search failed. Please proceed with general knowledge about: ${userInputText}]`
+        }
+    }
+
+    // Build messages for the main model (diagram generation)
+    const diagramModeInstruction = searchSummary
+        ? `
+CURRENT MODE: DIAGRAM WITH RESEARCH CONTEXT
+Available Tools: "display_diagram", "edit_diagram", "append_diagram"
+Unavailable Tools: "google_search"
+
+RESEARCH SUMMARY (from web search):
+${searchSummary}
+
+INSTRUCTIONS:
+- Use the research summary above to create an accurate and informative diagram.
+- You have diagram tools available to visualize this information.
+- Create a professional, well-structured diagram based on the research findings.`
+        : `
+CURRENT MODE: DIAGRAM / NORMAL
+Available Tools: "display_diagram", "edit_diagram", "append_diagram"
+Unavailable Tools: "google_search"
+
+INSTRUCTIONS:
+- You CANNOT search the web.
+- If the user asks to search, explain that you are in Diagram Mode (or that Search is disabled) and cannot access external information right now.`
+
+    const allMessages = [
+        ...systemMessages,
+        { role: "system", content: diagramModeInstruction },
+        ...enhancedMessages,
+    ]
+
+    // Always use diagram tools for the main response (search is handled separately in Step 1)
+    // Disable thinking when using function tools to avoid provider conflicts
+    const runtimeProviderOptions =
+        isGoogleModel && providerOptions?.google
+            ? {
+                  ...providerOptions,
+                  google: {
+                      ...providerOptions.google,
+                      thinkingConfig: undefined,
+                  },
+              }
+            : providerOptions
+
+    // Always use diagram tools - search is handled separately in Step 1 if enabled
+    const tools = {
+        // Client-side tool that will be executed on the client
+        display_diagram: {
+            description: `Display a diagram on draw.io. Pass ONLY the mxCell elements - wrapper tags and root cells are added automatically.
+
+VALIDATION RULES (XML will be rejected if violated):
+1. Generate ONLY mxCell elements - NO wrapper tags (<mxfile>, <mxGraphModel>, <root>)
+2. Do NOT include root cells (id="0" or id="1") - they are added automatically
+3. All mxCell elements must be siblings - never nested
+4. Every mxCell needs a unique id (start from "2")
+5. Every mxCell needs a valid parent attribute (use "1" for top-level)
+6. Escape special chars in values: &lt; &gt; &amp; &quot;
+
+Example (generate ONLY this - no wrapper tags):
+<mxCell id="lane1" value="Frontend" style="swimlane;" vertex="1" parent="1">
+  <mxGeometry x="40" y="40" width="200" height="200" as="geometry"/>
+</mxCell>
+<mxCell id="step1" value="Step 1" style="rounded=1;" vertex="1" parent="lane1">
+  <mxGeometry x="20" y="60" width="160" height="40" as="geometry"/>
+</mxCell>
+<mxCell id="lane2" value="Backend" style="swimlane;" vertex="1" parent="1">
+  <mxGeometry x="280" y="40" width="200" height="200" as="geometry"/>
+</mxCell>
+<mxCell id="step2" value="Step 2" style="rounded=1;" vertex="1" parent="lane2">
+  <mxGeometry x="20" y="60" width="160" height="40" as="geometry"/>
+</mxCell>
+<mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;" edge="1" parent="1" source="step1" target="step2">
+  <mxGeometry relative="1" as="geometry"/>
+</mxCell>
+
+Notes:
+- For AWS diagrams, use **AWS 2025 icons**.
+- For animated connectors, add "flowAnimation=1" to edge style.
+`,
+            inputSchema: z.object({
+                xml: z
+                    .string()
+                    .describe("XML string to be displayed on draw.io"),
+            }),
+        },
+        edit_diagram: {
+            description: `Edit the current diagram by ID-based operations (update/add/delete cells).
+
+Operations:
+- update: Replace an existing cell by its id. Provide cell_id and complete new_xml.
+- add: Add a new cell. Provide cell_id (new unique id) and new_xml.
+- delete: Remove a cell by its id. Only cell_id is needed.
+
+For update/add, new_xml must be a complete mxCell XML element including mxGeometry.
+
+⚠️ JSON ESCAPING: Every " inside new_xml MUST be escaped as \\". Example: id=\\"5\\" value=\\"Label\\"`,
+            inputSchema: z.object({
+                operations: z
+                    .array(
+                        z.object({
+                            type: z
+                                .enum(["update", "add", "delete"])
+                                .describe("Operation type"),
+                            cell_id: z
+                                .string()
+                                .describe(
+                                    "The id of the mxCell. Must match the id attribute in new_xml.",
+                                ),
+                            new_xml: z
+                                .string()
+                                .optional()
+                                .describe(
+                                    "Complete mxCell XML element (required for update/add)",
+                                ),
+                        }),
+                    )
+                    .describe("Array of operations to apply"),
+            }),
+        },
+        append_diagram: {
+            description: `Continue generating diagram XML when previous display_diagram output was truncated due to length limits.
+
+WHEN TO USE: Only call this tool after display_diagram was truncated (you'll see an error message about truncation).
+
+CRITICAL INSTRUCTIONS:
+1. Do NOT include any wrapper tags - just continue the mxCell elements
+2. Continue from EXACTLY where your previous output stopped
+3. Complete the remaining mxCell elements
+4. If still truncated, call append_diagram again with the next fragment
+
+Example: If previous output ended with '<mxCell id="x" style="rounded=1', continue with ';" vertex="1">...' and complete the remaining elements.`,
+            inputSchema: z.object({
+                xml: z
+                    .string()
+                    .describe(
+                        "Continuation XML fragment to append (NO wrapper tags)",
+                    ),
+            }),
+        },
+    }
 
     const result = streamText({
         model,
@@ -486,120 +702,10 @@ ${userInputText}
             return null
         },
         messages: allMessages,
-        ...(providerOptions && { providerOptions }), // This now includes all reasoning configs
-        ...(headers && { headers }),
-        // Langfuse telemetry config (returns undefined if not configured)
-        ...(getTelemetryConfig({ sessionId: validSessionId, userId }) && {
-            experimental_telemetry: getTelemetryConfig({
-                sessionId: validSessionId,
-                userId,
-            }),
-        }),
-        onFinish: ({ text, usage }) => {
-            // Pass usage to Langfuse (Bedrock streaming doesn't auto-report tokens to telemetry)
-            setTraceOutput(text, {
-                promptTokens: usage?.inputTokens,
-                completionTokens: usage?.outputTokens,
-            })
-        },
-        tools: {
-            // Client-side tool that will be executed on the client
-            display_diagram: {
-                description: `Display a diagram on draw.io. Pass ONLY the mxCell elements - wrapper tags and root cells are added automatically.
-
-VALIDATION RULES (XML will be rejected if violated):
-1. Generate ONLY mxCell elements - NO wrapper tags (<mxfile>, <mxGraphModel>, <root>)
-2. Do NOT include root cells (id="0" or id="1") - they are added automatically
-3. All mxCell elements must be siblings - never nested
-4. Every mxCell needs a unique id (start from "2")
-5. Every mxCell needs a valid parent attribute (use "1" for top-level)
-6. Escape special chars in values: &lt; &gt; &amp; &quot;
-
-Example (generate ONLY this - no wrapper tags):
-<mxCell id="lane1" value="Frontend" style="swimlane;" vertex="1" parent="1">
-  <mxGeometry x="40" y="40" width="200" height="200" as="geometry"/>
-</mxCell>
-<mxCell id="step1" value="Step 1" style="rounded=1;" vertex="1" parent="lane1">
-  <mxGeometry x="20" y="60" width="160" height="40" as="geometry"/>
-</mxCell>
-<mxCell id="lane2" value="Backend" style="swimlane;" vertex="1" parent="1">
-  <mxGeometry x="280" y="40" width="200" height="200" as="geometry"/>
-</mxCell>
-<mxCell id="step2" value="Step 2" style="rounded=1;" vertex="1" parent="lane2">
-  <mxGeometry x="20" y="60" width="160" height="40" as="geometry"/>
-</mxCell>
-<mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic;" edge="1" parent="1" source="step1" target="step2">
-  <mxGeometry relative="1" as="geometry"/>
-</mxCell>
-
-Notes:
-- For AWS diagrams, use **AWS 2025 icons**.
-- For animated connectors, add "flowAnimation=1" to edge style.
-`,
-                inputSchema: z.object({
-                    xml: z
-                        .string()
-                        .describe("XML string to be displayed on draw.io"),
-                }),
-            },
-            edit_diagram: {
-                description: `Edit the current diagram by ID-based operations (update/add/delete cells).
-
-Operations:
-- update: Replace an existing cell by its id. Provide cell_id and complete new_xml.
-- add: Add a new cell. Provide cell_id (new unique id) and new_xml.
-- delete: Remove a cell by its id. Only cell_id is needed.
-
-For update/add, new_xml must be a complete mxCell element including mxGeometry.
-
-⚠️ JSON ESCAPING: Every " inside new_xml MUST be escaped as \\". Example: id=\\"5\\" value=\\"Label\\"`,
-                inputSchema: z.object({
-                    operations: z
-                        .array(
-                            z.object({
-                                type: z
-                                    .enum(["update", "add", "delete"])
-                                    .describe("Operation type"),
-                                cell_id: z
-                                    .string()
-                                    .describe(
-                                        "The id of the mxCell. Must match the id attribute in new_xml.",
-                                    ),
-                                new_xml: z
-                                    .string()
-                                    .optional()
-                                    .describe(
-                                        "Complete mxCell XML element (required for update/add)",
-                                    ),
-                            }),
-                        )
-                        .describe("Array of operations to apply"),
-                }),
-            },
-            append_diagram: {
-                description: `Continue generating diagram XML when previous display_diagram output was truncated due to length limits.
-
-WHEN TO USE: Only call this tool after display_diagram was truncated (you'll see an error message about truncation).
-
-CRITICAL INSTRUCTIONS:
-1. Do NOT include any wrapper tags - just continue the mxCell elements
-2. Continue from EXACTLY where your previous output stopped
-3. Complete the remaining mxCell elements
-4. If still truncated, call append_diagram again with the next fragment
-
-Example: If previous output ended with '<mxCell id="x" style="rounded=1', continue with ';" vertex="1">...' and complete the remaining elements.`,
-                inputSchema: z.object({
-                    xml: z
-                        .string()
-                        .describe(
-                            "Continuation XML fragment to append (NO wrapper tags)",
-                        ),
-                }),
-            },
-        },
-        ...(process.env.TEMPERATURE !== undefined && {
-            temperature: parseFloat(process.env.TEMPERATURE),
-        }),
+        ...(runtimeProviderOptions && {
+            providerOptions: runtimeProviderOptions,
+        }), // Pass sanitized options
+        tools,
     })
 
     return result.toUIMessageStreamResponse({
@@ -617,10 +723,17 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
                 // Note: cacheWriteInputTokens is not available on finish part
                 const totalInputTokens =
                     (usage.inputTokens ?? 0) + (usage.cachedInputTokens ?? 0)
+
+                // Pass provider metadata (including Google search grounding) to client
+                // Note: providerMetadata is available in the finish part from streamText
+                const providerMetadata = (part as any)
+                    .providerMetadata as ProviderMetadata
+
                 return {
                     inputTokens: totalInputTokens,
                     outputTokens: usage.outputTokens ?? 0,
                     finishReason: (part as any).finishReason,
+                    providerMetadata,
                 }
             }
             return undefined

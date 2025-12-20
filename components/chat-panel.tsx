@@ -8,6 +8,7 @@ import {
     MessageSquarePlus,
     PanelRightClose,
     PanelRightOpen,
+    Search,
     Settings,
 } from "lucide-react"
 import Image from "next/image"
@@ -177,6 +178,7 @@ export default function ChatPanel({
     const [tpmLimit, setTpmLimit] = useState(0)
     const [showNewChatDialog, setShowNewChatDialog] = useState(false)
     const [minimalStyle, setMinimalStyle] = useState(false)
+    const [isSearchEnabled, setIsSearchEnabled] = useState(false)
     const [modelSelectorOpen, setModelSelectorOpen] = useState(false)
     const [selectedModel, setSelectedModel] = useState(() => {
         if (typeof window === "undefined") return ""
@@ -1206,6 +1208,7 @@ Continue from EXACTLY where you stopped.`,
                     ...(minimalStyle && {
                         "x-minimal-style": "true",
                     }),
+                    "x-search-enabled": String(isSearchEnabled),
                 },
             },
         )
@@ -1403,7 +1406,7 @@ Continue from EXACTLY where you stopped.`,
                         <div className="flex items-center gap-2">
                             <Image
                                 src="/favicon.ico"
-                                alt="Clarify"
+                                alt="StemFun"
                                 width={isMobile ? 24 : 28}
                                 height={isMobile ? 24 : 28}
                                 className="rounded flex-shrink-0"
@@ -1411,7 +1414,7 @@ Continue from EXACTLY where you stopped.`,
                             <h1
                                 className={`${isMobile ? "text-sm" : "text-base"} font-semibold tracking-tight whitespace-nowrap`}
                             >
-                                Clarify
+                                StemFun
                             </h1>
                         </div>
                         {!isMobile && (
@@ -1445,34 +1448,29 @@ Continue from EXACTLY where you stopped.`,
                         <ButtonWithTooltip
                             tooltipContent="Start fresh chat"
                             variant="ghost"
-                            size="icon"
+                            size="sm"
                             onClick={() => setShowNewChatDialog(true)}
-                            className="hover:bg-accent"
+                            className="hover:bg-accent transition-colors gap-2 px-2"
                         >
                             <MessageSquarePlus
-                                className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} text-muted-foreground`}
+                                className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} text-foreground/70 hover:text-foreground transition-all`}
                             />
+                            {!isMobile && (
+                                <span className="text-xs font-bold text-foreground/70">
+                                    New chat
+                                </span>
+                            )}
                         </ButtonWithTooltip>
                         <div className="w-px h-5 bg-border mx-1" />
-                        {/* <a
-                            href="https://github.com/DayuanJiang/next-ai-draw-io"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-none text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                        >
-                            <FaGithub
-                                className={`${isMobile ? "w-4 h-4" : "w-5 h-5"}`}
-                            />
-                        </a> */}
                         <ButtonWithTooltip
                             tooltipContent="Settings"
                             variant="ghost"
                             size="icon"
                             onClick={() => setShowSettingsDialog(true)}
-                            className="hover:bg-accent"
+                            className="hover:bg-accent transition-colors"
                         >
                             <Settings
-                                className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} text-muted-foreground`}
+                                className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} text-foreground/70 hover:text-foreground transition-all`}
                             />
                         </ButtonWithTooltip>
                         {!isMobile && (
@@ -1481,9 +1479,9 @@ Continue from EXACTLY where you stopped.`,
                                 variant="ghost"
                                 size="icon"
                                 onClick={onToggleVisibility}
-                                className="hover:bg-accent"
+                                className="hover:bg-accent transition-colors"
                             >
-                                <PanelRightClose className="h-5 w-5 text-muted-foreground" />
+                                <PanelRightClose className="h-5 w-5 text-foreground/70 hover:text-foreground transition-all" />
                             </ButtonWithTooltip>
                         )}
                     </div>
@@ -1517,7 +1515,7 @@ Continue from EXACTLY where you stopped.`,
                     }`}
                 >
                     <div className="flex items-center gap-2">
-                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.24em] text-foreground/70">
                             Model
                         </span>
                         <div className="h-4 w-px bg-border/70" />
@@ -1626,12 +1624,34 @@ Continue from EXACTLY where you stopped.`,
                             </ModelSelectorContent>
                         </ModelSelector>
                     </div>
-                    {!isMobile && (
+                    <div className="flex items-center gap-2">
+                        <ButtonWithTooltip
+                            tooltipContent={
+                                isSearchEnabled
+                                    ? "Disable Search (Enable Diagram)"
+                                    : "Enable Search (Disable Diagram)"
+                            }
+                            variant={isSearchEnabled ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => setIsSearchEnabled(!isSearchEnabled)}
+                            className={`h-9 px-3 gap-2 rounded-none border-2 transition-all ${isSearchEnabled ? "border-primary/50 bg-primary/10 shadow-sm font-bold" : "border-border/70 hover:bg-accent/50 text-foreground/80 font-semibold"}`}
+                        >
+                            <Search
+                                className={`h-4 w-4 ${isSearchEnabled ? "text-primary" : "text-foreground/80"}`}
+                            />
+                            <span
+                                className={`text-xs tracking-wide ${isSearchEnabled ? "text-primary font-bold" : "text-foreground/80"}`}
+                            >
+                                {isSearchEnabled ? "Search ON" : "Search OFF"}
+                            </span>
+                        </ButtonWithTooltip>
+                    </div>
+                </div>
+                {/* {!isMobile && (
                         <div className="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                             Applies to new requests
                         </div>
-                    )}
-                </div>
+                    )} */}
                 <ChatInput
                     input={input}
                     status={status}

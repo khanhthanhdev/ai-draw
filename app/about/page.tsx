@@ -8,7 +8,7 @@ import { FadeIn } from "@/components/ui/fade-in"
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects"
 
 export const metadata: Metadata = {
-    title: "About - Clarify",
+    title: "About - StemFun",
     description:
         "Landing page for a text to diagram AI platform. Convert prompts to draw.io diagrams fast.",
     keywords: [
@@ -41,7 +41,7 @@ export default function About() {
                         href="/"
                         className="text-lg font-semibold tracking-tight"
                     >
-                        Clarify
+                        StemFun
                     </Link>
                     <nav className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                         <Link
@@ -223,14 +223,15 @@ export default function About() {
                                 </p>
                             </div>
                             <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                <span className="border border-border bg-chart-1/15 px-3 py-1 text-foreground">
-                                    Open source
+                                <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
+                                    AI powered
+                                </span>
+
+                                <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
+                                    Draw.io Native
                                 </span>
                                 <span className="border border-border bg-chart-2/15 px-3 py-1 text-foreground">
-                                    Self host ready
-                                </span>
-                                <span className="border border-border bg-chart-3/15 px-3 py-1 text-foreground">
-                                    Draw.io native
+                                    Animated Diagram
                                 </span>
                             </div>
                         </div>
@@ -570,7 +571,7 @@ export default function About() {
 
             <footer className="border-t border-border bg-background">
                 <div className="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
-                    Clarify - See what you mean.
+                    StemFun - See what you mean.
                 </div>
             </footer>
         </div>

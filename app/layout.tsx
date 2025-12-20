@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-    title: "Clarify - AI-Powered Diagram Generator",
+    title: "StemFun - AI-Powered Diagram Generator",
     description:
         "Create AWS architecture diagrams, flowcharts, and technical diagrams using AI. Free online tool integrating draw.io with AI assistance for professional diagram creation.",
     keywords: [
@@ -39,30 +39,30 @@ export const metadata: Metadata = {
         "free diagram generator",
         "online diagram maker",
     ],
-    authors: [{ name: "Clarify" }],
-    creator: "Clarify",
-    publisher: "Clarify",
+    authors: [{ name: "StemFun" }],
+    creator: "StemFun",
+    publisher: "StemFun",
     metadataBase: new URL("https://next-ai-drawio.jiang.jp"),
     openGraph: {
-        title: "Clarify - AI Diagram Generator",
+        title: "StemFun - AI Diagram Generator",
         description:
             "Create professional diagrams with AI assistance. Supports AWS architecture, flowcharts, and more.",
         type: "website",
         url: "https://next-ai-drawio.jiang.jp",
-        siteName: "Clarify",
+        siteName: "StemFun",
         locale: "en_US",
         images: [
             {
                 url: "/architecture.png",
                 width: 1200,
                 height: 630,
-                alt: "Clarify - AI-powered diagram creation tool",
+                alt: "StemFun - AI-powered diagram creation tool",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Clarify - AI Diagram Generator",
+        title: "StemFun - AI Diagram Generator",
         description:
             "Create professional diagrams with AI assistance. Free, no login required.",
         images: ["/architecture.png"],
@@ -91,7 +91,7 @@ export default function RootLayout({
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        name: "Clarify",
+        name: "StemFun",
         applicationCategory: "DesignApplication",
         operatingSystem: "Web Browser",
         description:

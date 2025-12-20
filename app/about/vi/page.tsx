@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/ui/fade-in"
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects"
 
 export const metadata: Metadata = {
-    title: "Giới thiệu - Clarify",
+    title: "Giới thiệu - StemFun",
     description:
         "Nền tảng AI chuyển văn bản thành sơ đồ. Tạo diagram draw.io nhanh từ prompt.",
     keywords: [
@@ -40,7 +40,7 @@ export default function AboutVI() {
                         href="/"
                         className="text-lg font-semibold tracking-tight"
                     >
-                        Clarify
+                        StemFun
                     </Link>
                     <nav className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                         <Link
@@ -564,7 +564,7 @@ export default function AboutVI() {
 
             <footer className="border-t border-border bg-background">
                 <div className="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
-                    Clarify - Hiện thực hóa ý tưởng của bạn
+                    StemFun - Hiện thực hóa ý tưởng của bạn
                 </div>
             </footer>
         </div>

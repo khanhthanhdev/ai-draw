@@ -45,6 +45,12 @@ export const MODEL_PRICING: ModelPricing[] = [
         multiplier: 0.33,
     },
     {
+        id: "gemini-2.5-flash",
+        name: "Gemini 2.5 Flash",
+        provider: "google",
+        multiplier: 0.5,
+    },
+    {
         id: "xiaomi/mimo-v2-flash:free",
         name: "Xiaomi Mimo V2",
         provider: "openrouter",

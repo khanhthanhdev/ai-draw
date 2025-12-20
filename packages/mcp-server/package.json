@@ -1,7 +1,7 @@
 {
     "name": "@next-ai-drawio/mcp-server",
     "version": "0.1.2",
-    "description": "MCP server for Clarify - AI-powered diagram generation with real-time browser preview",
+    "description": "MCP server for StemFun - AI-powered diagram generation with real-time browser preview",
     "type": "module",
     "main": "dist/index.js",
     "bin": {

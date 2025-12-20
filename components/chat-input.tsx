@@ -340,7 +340,7 @@ export function ChatInput({
                     placeholder="Describe your diagram or upload a file..."
                     disabled={isDisabled}
                     aria-label="Chat input"
-                    className="min-h-[60px] max-h-[200px] resize-none border-0 bg-transparent px-4 py-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/60"
+                    className="min-h-[60px] max-h-[200px] resize-none border-0 bg-transparent px-4 py-3 text-[15px] font-medium text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/80"
                 />
 
                 {/* Action bar */}
@@ -353,7 +353,7 @@ export function ChatInput({
                             size="sm"
                             onClick={() => setShowClearDialog(true)}
                             tooltipContent="Clear conversation"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            className="h-8 w-8 p-0 text-foreground/70 hover:text-destructive hover:bg-destructive/10 transition-colors"
                         >
                             <Trash2 className="h-4 w-4" />
                         </ButtonWithTooltip>
@@ -380,10 +380,10 @@ export function ChatInput({
                                     />
                                     <label
                                         htmlFor="minimal-style"
-                                        className={`text-xs cursor-pointer select-none ${
+                                        className={`text-xs cursor-pointer select-none font-semibold ${
                                             minimalStyle
-                                                ? "text-primary font-medium"
-                                                : "text-muted-foreground"
+                                                ? "text-primary"
+                                                : "text-foreground/80"
                                         }`}
                                     >
                                         {minimalStyle ? "Minimal" : "Styled"}
@@ -405,7 +405,7 @@ export function ChatInput({
                             onClick={() => onToggleHistory(true)}
                             disabled={isDisabled || diagramHistory.length === 0}
                             tooltipContent="Diagram history"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             <History className="h-4 w-4" />
                         </ButtonWithTooltip>
@@ -417,7 +417,7 @@ export function ChatInput({
                             onClick={() => setShowSaveDialog(true)}
                             disabled={isDisabled}
                             tooltipContent="Save diagram"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             <Download className="h-4 w-4" />
                         </ButtonWithTooltip>
@@ -440,7 +440,7 @@ export function ChatInput({
                             onClick={triggerFileInput}
                             disabled={isDisabled}
                             tooltipContent="Upload file (image, PDF, text)"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             <ImageIcon className="h-4 w-4" />
                         </ButtonWithTooltip>
@@ -464,7 +464,7 @@ export function ChatInput({
                                 isDisabled || isEnhancingPrompt || !input.trim()
                             }
                             tooltipContent="Enhance Prompt"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            className="h-8 w-8 p-0 text-foreground/70 hover:text-foreground transition-colors"
                         >
                             {isEnhancingPrompt ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -502,7 +502,7 @@ export function ChatInput({
                             type="submit"
                             disabled={isDisabled || !input.trim()}
                             size="sm"
-                            className="h-8 px-4 rounded-none font-medium shadow-sm"
+                            className="h-8 px-5 rounded-none font-bold shadow-md hover:shadow-lg transition-all active:scale-95"
                             aria-label={
                                 isDisabled ? "Sending..." : "Send message"
                             }
@@ -511,7 +511,7 @@ export function ChatInput({
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
                                 <>
-                                    <Send className="h-4 w-4 mr-1.5" />
+                                    <Send className="h-4 w-4 mr-2" />
                                     Send
                                 </>
                             )}

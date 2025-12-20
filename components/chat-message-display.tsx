@@ -12,6 +12,7 @@ import {
     FileText,
     Pencil,
     RotateCcw,
+    Search,
     ThumbsDown,
     ThumbsUp,
     X,
@@ -105,6 +106,68 @@ function OperationsDisplay({ operations }: { operations: DiagramOperation[] }) {
                     )}
                 </div>
             ))}
+        </div>
+    )
+}
+
+function GroundingDisplay({ metadata }: { metadata: any }) {
+    if (!metadata || !metadata.google?.groundingMetadata) return null
+
+    const grounding = metadata.google.groundingMetadata
+    const queries = grounding.webSearchQueries || []
+    const entryPointHtml = grounding.searchEntryPoint?.renderedContent
+    const chunks = grounding.groundingChunks || []
+    const supports = grounding.groundingSupports || []
+
+    if (
+        queries.length === 0 &&
+        !entryPointHtml &&
+        chunks.length === 0 &&
+        supports.length === 0
+    )
+        return null
+
+    return (
+        <div className="mt-3 mb-2 rounded-none border border-border/60 bg-muted/20 overflow-hidden">
+            <div className="flex items-center gap-2 px-3 py-2 bg-muted/40 border-b border-border/40">
+                <div className="w-5 h-5 rounded-none bg-blue-500/10 flex items-center justify-center">
+                    <Search className="w-3 h-3 text-blue-600" />
+                </div>
+                <span className="text-xs font-medium text-foreground/80">
+                    Search Results
+                </span>
+            </div>
+
+            <div className="p-3 space-y-3">
+                {/* Search Queries */}
+                {queries.length > 0 && (
+                    <div className="text-xs">
+                        <span className="text-muted-foreground mr-2">
+                            Searched for:
+                        </span>
+                        <div className="inline-flex flex-wrap gap-1.5 mt-1">
+                            {queries.map((q: string, i: number) => (
+                                <span
+                                    key={i}
+                                    className="bg-background border border-border/50 px-1.5 py-0.5 rounded text-foreground/80 font-mono text-[10px]"
+                                >
+                                    {q}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Rendered Entry Point (Google's widget) */}
+                {entryPointHtml && (
+                    <div
+                        className="text-xs bg-background/50 p-2 rounded border border-border/40 [&_a]:text-blue-600 [&_a]:underline"
+                        dangerouslySetInnerHTML={{
+                            __html: entryPointHtml,
+                        }}
+                    />
+                )}
+            </div>
         </div>
     )
 }
@@ -634,9 +697,34 @@ export function ChatMessageDisplay({
                     return "Generate Diagram"
                 case "edit_diagram":
                     return "Edit Diagram"
+                case "google_search":
+                    return "Searching the web..."
                 default:
                     return name
             }
+        }
+
+        // Special case: google_search is a provider-defined tool.
+        // Its results are embedded via grounding metadata, so we show a minimal indicator.
+        if (toolName === "google_search") {
+            return (
+                <div
+                    key={callId}
+                    className="my-3 rounded-none border border-border/60 bg-muted/30 overflow-hidden"
+                >
+                    <div className="flex items-center gap-2 px-4 py-3 bg-muted/50">
+                        <Search className="w-4 h-4 text-primary animate-pulse" />
+                        <span className="text-sm font-medium text-foreground/80">
+                            {state === "output-available"
+                                ? "Web search complete"
+                                : "Searching the web..."}
+                        </span>
+                        {state === "input-streaming" && (
+                            <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin ml-auto" />
+                        )}
+                    </div>
+                </div>
+            )
         }
 
         return (
@@ -1254,6 +1342,18 @@ export function ChatMessageDisplay({
                                             )
                                         })()
                                     )}
+
+                                    {/* Grounding Display (Sources) */}
+                                    {message.role === "assistant" &&
+                                        (message as any).providerMetadata && (
+                                            <GroundingDisplay
+                                                metadata={
+                                                    (message as any)
+                                                        .providerMetadata
+                                                }
+                                            />
+                                        )}
+
                                     {/* Action buttons for assistant messages */}
                                     {message.role === "assistant" && (
                                         <div className="flex items-center gap-1 mt-2">

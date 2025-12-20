@@ -26,6 +26,7 @@ interface ModelConfig {
     providerOptions?: any
     headers?: Record<string, string>
     modelId: string
+    provider: ProviderName
 }
 
 export interface ClientOverrides {
@@ -711,7 +712,7 @@ export function getAIModel(overrides?: ClientOverrides): ModelConfig {
         providerOptions = customProviderOptions
     }
 
-    return { model, providerOptions, headers, modelId }
+    return { model, providerOptions, headers, modelId, provider }
 }
 
 /**

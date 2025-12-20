@@ -24,6 +24,11 @@ Optional custom endpoint:
 GOOGLE_BASE_URL=https://your-custom-endpoint
 ```
 
+**Search grounding (Google Search)**
+
+- The chat endpoint enables the `google_search` tool for Google provider models that support grounding (for example, `gemini-2.5-*`).
+- Sources are streamed in chat responses when available.
+
 ### OpenAI
 
 ```bash
