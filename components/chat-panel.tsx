@@ -73,6 +73,11 @@ interface ChatMessage {
     [key: string]: unknown
 }
 
+interface PromptEnhancementState {
+    originalInput: string
+    enhancedInput: string
+}
+
 interface ChatPanelProps {
     isVisible: boolean
     onToggleVisibility: () => void
@@ -164,6 +169,9 @@ export default function ChatPanel({
     const [showSettingsDialog, setShowSettingsDialog] = useState(false)
     const [, setAccessCodeRequired] = useState(false)
     const [input, setInput] = useState("")
+    const [promptEnhancement, setPromptEnhancement] =
+        useState<PromptEnhancementState | null>(null)
+    const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
     const [dailyRequestLimit, setDailyRequestLimit] = useState(0)
     const [dailyTokenLimit, setDailyTokenLimit] = useState(0)
     const [tpmLimit, setTpmLimit] = useState(0)
@@ -185,6 +193,10 @@ export default function ChatPanel({
         if (savedInput) {
             setInput(savedInput)
         }
+    }, [])
+
+    const saveInputToSessionStorage = useCallback((value: string) => {
+        sessionStorage.setItem(SESSION_STORAGE_INPUT_KEY, value)
     }, [])
 
     // Check config on mount
@@ -852,6 +864,109 @@ Continue from EXACTLY where you stopped.`,
             window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [sessionId])
 
+    const buildFileContextExcerpt = useCallback(() => {
+        if (files.length === 0) return ""
+
+        const MAX_CONTEXT_CHARS = 800
+        const MAX_FILE_EXCERPT_CHARS = 240
+        let remaining = MAX_CONTEXT_CHARS
+        const excerpts: string[] = []
+
+        for (const file of files) {
+            const extracted = pdfData.get(file)
+            if (!extracted?.text || extracted.isExtracting) continue
+            const cleaned = extracted.text.trim()
+            if (!cleaned) continue
+
+            const header = `[${file.name}]`
+            const available = remaining - header.length - 1
+            if (available <= 0) break
+
+            const snippet = cleaned.slice(
+                0,
+                Math.min(MAX_FILE_EXCERPT_CHARS, available),
+            )
+            excerpts.push(`${header}\n${snippet}`)
+            remaining -= header.length + 1 + snippet.length
+            if (remaining <= 0) break
+        }
+
+        return excerpts.join("\n\n")
+    }, [files, pdfData])
+
+    const handleEnhancePrompt = useCallback(async () => {
+        const trimmedInput = input.trim()
+        if (!trimmedInput || isEnhancingPrompt) return
+
+        setIsEnhancingPrompt(true)
+        const config = getAIConfig()
+        const originalInput = input
+        const fileContext = buildFileContextExcerpt()
+        const promptForEnhancement = fileContext
+            ? `User prompt:\n${trimmedInput}\n\nFile excerpts (use 1-3 details, do not copy verbatim):\n${fileContext}`
+            : trimmedInput
+
+        try {
+            const response = await fetch("/api/enhance-prompt", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-code": config.accessCode,
+                },
+                body: JSON.stringify({ prompt: promptForEnhancement }),
+            })
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}))
+                toast.error(
+                    data.error || "Failed to enhance prompt. Please try again.",
+                )
+                return
+            }
+
+            const data = await response.json()
+            const enhancedPrompt =
+                typeof data.enhancedPrompt === "string"
+                    ? data.enhancedPrompt.trim()
+                    : ""
+
+            if (!enhancedPrompt) {
+                toast.error("Enhancement returned an empty prompt.")
+                return
+            }
+
+            setPromptEnhancement({
+                originalInput,
+                enhancedInput: enhancedPrompt,
+            })
+            setInput(enhancedPrompt)
+            saveInputToSessionStorage(enhancedPrompt)
+        } catch (error) {
+            console.error("Prompt enhancement error:", error)
+            toast.error("Failed to enhance prompt. Please try again.")
+        } finally {
+            setIsEnhancingPrompt(false)
+        }
+    }, [
+        buildFileContextExcerpt,
+        input,
+        isEnhancingPrompt,
+        saveInputToSessionStorage,
+    ])
+
+    const handleApplyEnhancement = useCallback(() => {
+        if (!promptEnhancement) return
+        setPromptEnhancement(null)
+        saveInputToSessionStorage(input)
+    }, [input, promptEnhancement, saveInputToSessionStorage])
+
+    const handleUndoEnhancement = useCallback(() => {
+        if (!promptEnhancement) return
+        setInput(promptEnhancement.originalInput)
+        saveInputToSessionStorage(promptEnhancement.originalInput)
+        setPromptEnhancement(null)
+    }, [promptEnhancement, saveInputToSessionStorage])
+
     const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const isProcessing = status === "streaming" || status === "submitted"
@@ -895,6 +1010,7 @@ Continue from EXACTLY where you stopped.`,
                         },
                     ] as any)
                     setInput("")
+                    setPromptEnhancement(null)
                     sessionStorage.removeItem(SESSION_STORAGE_INPUT_KEY)
                     setFiles([])
                     return
@@ -943,6 +1059,7 @@ Continue from EXACTLY where you stopped.`,
 
                 // Token count is tracked in onFinish with actual server usage
                 setInput("")
+                setPromptEnhancement(null)
                 sessionStorage.removeItem(SESSION_STORAGE_INPUT_KEY)
                 setFiles([])
             } catch (error) {
@@ -959,6 +1076,7 @@ Continue from EXACTLY where you stopped.`,
             .toString(36)
             .slice(2, 9)}`
         setSessionId(newSessionId)
+        setPromptEnhancement(null)
         xmlSnapshotsRef.current.clear()
         // Clear localStorage with error handling
         try {
@@ -983,10 +1101,6 @@ Continue from EXACTLY where you stopped.`,
     ) => {
         saveInputToSessionStorage(e.target.value)
         setInput(e.target.value)
-    }
-
-    const saveInputToSessionStorage = (input: string) => {
-        sessionStorage.setItem(SESSION_STORAGE_INPUT_KEY, input)
     }
 
     // Helper functions for message actions (regenerate/edit)
@@ -1533,6 +1647,11 @@ Continue from EXACTLY where you stopped.`,
                     error={error}
                     minimalStyle={minimalStyle}
                     onMinimalStyleChange={setMinimalStyle}
+                    onEnhancePrompt={handleEnhancePrompt}
+                    isEnhancingPrompt={isEnhancingPrompt}
+                    hasPromptEnhancement={!!promptEnhancement}
+                    onApplyPromptEnhancement={handleApplyEnhancement}
+                    onUndoPromptEnhancement={handleUndoEnhancement}
                 />
             </footer>
 

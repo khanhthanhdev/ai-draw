@@ -6,6 +6,7 @@ import {
     Image as ImageIcon,
     Loader2,
     Send,
+    Sparkles,
     Trash2,
 } from "lucide-react"
 import type React from "react"
@@ -137,6 +138,11 @@ interface ChatInputProps {
     error?: Error | null
     minimalStyle?: boolean
     onMinimalStyleChange?: (value: boolean) => void
+    onEnhancePrompt?: () => void
+    isEnhancingPrompt?: boolean
+    hasPromptEnhancement?: boolean
+    onApplyPromptEnhancement?: () => void
+    onUndoPromptEnhancement?: () => void
 }
 
 export function ChatInput({
@@ -154,6 +160,11 @@ export function ChatInput({
     error = null,
     minimalStyle = false,
     onMinimalStyleChange = () => {},
+    onEnhancePrompt = () => {},
+    isEnhancingPrompt = false,
+    hasPromptEnhancement = false,
+    onApplyPromptEnhancement = () => {},
+    onUndoPromptEnhancement = () => {},
 }: ChatInputProps) {
     const {
         diagramHistory,
@@ -443,6 +454,47 @@ export function ChatInput({
                             multiple
                             disabled={isDisabled}
                         />
+
+                        <ButtonWithTooltip
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={onEnhancePrompt}
+                            disabled={
+                                isDisabled || isEnhancingPrompt || !input.trim()
+                            }
+                            tooltipContent="Enhance Prompt"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                        >
+                            {isEnhancingPrompt ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Sparkles className="h-4 w-4" />
+                            )}
+                        </ButtonWithTooltip>
+
+                        {hasPromptEnhancement && (
+                            <div className="flex items-center gap-1 ml-1">
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="sm"
+                                    className="h-7 px-2 text-xs"
+                                    onClick={onApplyPromptEnhancement}
+                                >
+                                    Apply
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7 px-2 text-xs"
+                                    onClick={onUndoPromptEnhancement}
+                                >
+                                    Undo
+                                </Button>
+                            </div>
+                        )}
 
                         <div className="w-px h-5 bg-border mx-1" />
 
