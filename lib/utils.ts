@@ -1054,46 +1054,7 @@ export function autoFixXml(xml: string): { fixed: string; fixes: string[] } {
         fixes.push("Fixed <Cell> tags to <mxCell>")
     }
 
-    // 8b. Remove non-draw.io tags (LLM sometimes includes Claude's function calling XML)
-    // Valid draw.io tags: mxfile, diagram, mxGraphModel, root, mxCell, mxGeometry, mxPoint, Array, Object
-    const validDrawioTags = new Set([
-        "mxfile",
-        "diagram",
-        "mxGraphModel",
-        "root",
-        "mxCell",
-        "mxGeometry",
-        "mxPoint",
-        "Array",
-        "Object",
-        "mxRectangle",
-    ])
-    const foreignTagPattern = /<\/?([a-zA-Z][a-zA-Z0-9_]*)[^>]*>/g
-    let foreignMatch
-    const foreignTags = new Set<string>()
-    while ((foreignMatch = foreignTagPattern.exec(fixed)) !== null) {
-        const tagName = foreignMatch[1]
-        if (!validDrawioTags.has(tagName)) {
-            foreignTags.add(tagName)
-        }
-    }
-    if (foreignTags.size > 0) {
-        console.log(
-            "[autoFixXml] Step 8b: Found foreign tags:",
-            Array.from(foreignTags),
-        )
-        for (const tag of foreignTags) {
-            // Remove opening tags (with or without attributes)
-            fixed = fixed.replace(new RegExp(`<${tag}[^>]*>`, "gi"), "")
-            // Remove closing tags
-            fixed = fixed.replace(new RegExp(`</${tag}>`, "gi"), "")
-        }
-        fixes.push(
-            `Removed foreign tags: ${Array.from(foreignTags).join(", ")}`,
-        )
-    }
-
-    // 9. Fix common closing tag typos
+    // 8b. Fix common closing tag typos
     const tagTypos = [
         { wrong: /<\/mxElement>/gi, right: "</mxCell>", name: "</mxElement>" },
         { wrong: /<\/mxcell>/g, right: "</mxCell>", name: "</mxcell>" }, // case sensitivity
@@ -1109,12 +1070,51 @@ export function autoFixXml(xml: string): { fixed: string; fixes: string[] } {
             name: "</mxgraphmodel>",
         },
     ]
+
     for (const { wrong, right, name } of tagTypos) {
-        if (wrong.test(fixed)) {
-            fixed = fixed.replace(wrong, right)
+        const before_tag = fixed
+        fixed = fixed.replace(wrong, right)
+        if (fixed !== before_tag) {
             fixes.push(`Fixed typo ${name} to ${right}`)
         }
     }
+
+    // const validDrawioTags = new Set([
+    //     "mxfile",
+    //     "diagram",
+    //     "mxGraphModel",
+    //     "root",
+    //     "mxCell",
+    //     "mxGeometry",
+    //     "mxPoint",
+    //     "Array",
+    //     "Object",
+    //     "mxRectangle",
+    // ])
+    // const foreignTagPattern = /<\/?([a-zA-Z][a-zA-Z0-9_]*)[^>]*>/g
+    // let foreignMatch
+    // const foreignTags = new Set<string>()
+    // while ((foreignMatch = foreignTagPattern.exec(fixed)) !== null) {
+    //     const tagName = foreignMatch[1]
+    //     if (!validDrawioTags.has(tagName)) {
+    //         foreignTags.add(tagName)
+    //     }
+    // }
+    // if (foreignTags.size > 0) {
+    //     console.log(
+    //         "[autoFixXml] Step 8b: Found foreign tags:",
+    //         Array.from(foreignTags),
+    //     )
+    //     for (const tag of foreignTags) {
+    //         // Remove opening tags (with or without attributes)
+    //         fixed = fixed.replace(new RegExp(`<${tag}[^>]*>`, "gi"), "")
+    //         // Remove closing tags
+    //         fixed = fixed.replace(new RegExp(`</${tag}>`, "gi"), "")
+    //     }
+    //     fixes.push(
+    //         `Removed foreign tags: ${Array.from(foreignTags).join(", ")}`,
+    //     )
+    // }
 
     // 10. Fix unclosed tags by appending missing closing tags
     // Use parseXmlTags helper to track open tags

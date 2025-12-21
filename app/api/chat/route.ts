@@ -467,41 +467,64 @@ ${userInputText}
     let searchSummary: string | null = null
     let searchGroundingMetadata: any = null
 
+    // If search mode is enabled, we use a custom stream to show search progress
     if (explicitSearchMode) {
-        console.log(
-            `[route.ts] Search Mode: Running Step 1 (Search with gemini-2.5-flash-lite)...`,
-        )
-        try {
-            const searchResult = await generateText({
-                model: google("gemini-2.5-flash-lite"),
-                tools: {
-                    google_search: google.tools.googleSearch({}),
-                } as any, // Type assertion needed for provider-defined tools
-                prompt: `Search for information about: "${userInputText}"
+        const stream = createUIMessageStream({
+            execute: async ({ writer }) => {
+                // Step 1: Emit search-start data part (transient - won't be added to message history)
+                writer.write({
+                    type: "data-search-status",
+                    data: { status: "searching" },
+                })
+
+                console.log(
+                    `[route.ts] Search Mode: Running Step 1 (Search with gemini-2.5-flash-lite)...`,
+                )
+
+                try {
+                    const searchResult = await generateText({
+                        model: google("gemini-2.5-flash-lite"),
+                        tools: {
+                            google_search: google.tools.googleSearch({}),
+                        } as any,
+                        prompt: `Search for information about: "${userInputText}"
 
 Please search and provide a comprehensive summary of the key findings in well-organized bullet points or sections. 
 Focus on facts, data, and important details that would be useful for creating a visual diagram or infographic.
 Be thorough but concise.`,
-            })
+                    })
 
-            searchSummary = searchResult.text
-            searchGroundingMetadata =
-                searchResult.providerMetadata?.google?.groundingMetadata
-            console.log(
-                `[route.ts] Search Step Complete. Summary length: ${searchSummary?.length || 0} chars`,
-            )
-        } catch (searchError) {
-            console.error(`[route.ts] Search Step Failed:`, searchError)
-            // Continue without search summary - the diagram model will work with what it has
-            searchSummary = `[Search failed. Please proceed with general knowledge about: ${userInputText}]`
-        }
-    }
+                    searchSummary = searchResult.text
+                    searchGroundingMetadata =
+                        searchResult.providerMetadata?.google?.groundingMetadata
 
-    // Build messages for the main model (diagram generation)
-    const diagramModeInstruction = searchSummary
-        ? `
+                    console.log(
+                        `[route.ts] Search Step Complete. Summary length: ${searchSummary?.length || 0} chars`,
+                    )
+
+                    // Emit search-complete data part with grounding metadata
+                    writer.write({
+                        type: "data-search-status",
+                        data: {
+                            status: "complete",
+                            groundingMetadata: searchGroundingMetadata,
+                        },
+                    })
+                } catch (searchError) {
+                    console.error(`[route.ts] Search Step Failed:`, searchError)
+                    searchSummary = `[Search failed. Please proceed with general knowledge about: ${userInputText}]`
+
+                    writer.write({
+                        type: "data-search-status",
+                        data: { status: "error" },
+                    })
+                }
+
+                // Step 2: Now run the diagram generation and merge its stream
+                const diagramModeInstruction = searchSummary
+                    ? `
 CURRENT MODE: DIAGRAM WITH RESEARCH CONTEXT
-Available Tools: "display_diagram", "edit_diagram", "append_diagram"
+Available Tools: "display_diagram", "edit_diagram", "append_diagram", "get_shape_library"
 Unavailable Tools: "google_search"
 
 RESEARCH SUMMARY (from web search):
@@ -511,9 +534,114 @@ INSTRUCTIONS:
 - Use the research summary above to create an accurate and informative diagram.
 - You have diagram tools available to visualize this information.
 - Create a professional, well-structured diagram based on the research findings.`
-        : `
+                    : `
 CURRENT MODE: DIAGRAM / NORMAL
-Available Tools: "display_diagram", "edit_diagram", "append_diagram"
+Available Tools: "display_diagram", "edit_diagram", "append_diagram", "get_shape_library"
+Unavailable Tools: "google_search"
+
+INSTRUCTIONS:
+- You CANNOT search the web.
+- If the user asks to search, explain that you are in Diagram Mode (or that Search is disabled) and cannot access external information right now.`
+
+                const searchAllMessages = [
+                    ...systemMessages,
+                    {
+                        role: "system" as const,
+                        content: diagramModeInstruction,
+                    },
+                    ...enhancedMessages,
+                ]
+
+                const diagramResult = streamText({
+                    model,
+                    ...(process.env.MAX_OUTPUT_TOKENS && {
+                        maxOutputTokens: parseInt(
+                            process.env.MAX_OUTPUT_TOKENS,
+                            10,
+                        ),
+                    }),
+                    stopWhen: stepCountIs(5),
+                    experimental_repairToolCall: async ({
+                        toolCall,
+                        error,
+                    }) => {
+                        if (
+                            error instanceof InvalidToolInputError ||
+                            error.name === "AI_InvalidToolInputError"
+                        ) {
+                            try {
+                                let inputToRepair = toolCall.input
+                                if (typeof inputToRepair === "string") {
+                                    inputToRepair = inputToRepair.replace(
+                                        /,(\s*[}\]])/g,
+                                        "$1",
+                                    )
+                                }
+                                const repairedInput = jsonrepair(inputToRepair)
+                                return { ...toolCall, input: repairedInput }
+                            } catch {
+                                return null
+                            }
+                        }
+                        return null
+                    },
+                    messages: searchAllMessages,
+                    ...(runtimeProviderOptions && {
+                        providerOptions: runtimeProviderOptions,
+                    }),
+                    tools,
+                    experimental_telemetry: getTelemetryConfig({
+                        sessionId: validSessionId,
+                        userId: userId,
+                    }),
+                    onFinish: ({ text, usage }) => {
+                        const anyUsage = usage as any
+                        setTraceOutput(text, {
+                            promptTokens:
+                                anyUsage.promptTokens ?? anyUsage.inputTokens,
+                            completionTokens:
+                                anyUsage.completionTokens ??
+                                anyUsage.outputTokens,
+                        })
+                    },
+                })
+
+                // Merge the diagram stream into our custom stream
+                writer.merge(
+                    diagramResult.toUIMessageStream({
+                        sendReasoning: true,
+                        messageMetadata: ({ part }: { part: any }) => {
+                            if (part.type === "finish") {
+                                const usage = (part as any).totalUsage
+                                if (!usage) return undefined
+                                const totalInputTokens =
+                                    (usage.inputTokens ?? 0) +
+                                    (usage.cachedInputTokens ?? 0)
+                                const providerMetadata = (part as any)
+                                    .providerMetadata as ProviderMetadata
+                                return {
+                                    inputTokens: totalInputTokens,
+                                    outputTokens: usage.outputTokens ?? 0,
+                                    finishReason: (part as any).finishReason,
+                                    providerMetadata,
+                                    // Include search grounding in the metadata
+                                    searchGroundingMetadata,
+                                }
+                            }
+                            return undefined
+                        },
+                    }),
+                )
+            },
+        })
+
+        return createUIMessageStreamResponse({ stream })
+    }
+
+    // Non-search mode: Direct diagram generation
+    const diagramModeInstruction = `
+CURRENT MODE: DIAGRAM / NORMAL
+Available Tools: "display_diagram", "edit_diagram", "append_diagram", "get_shape_library"
 Unavailable Tools: "google_search"
 
 INSTRUCTIONS:
@@ -522,7 +650,7 @@ INSTRUCTIONS:
 
     const allMessages = [
         ...systemMessages,
-        { role: "system", content: diagramModeInstruction },
+        { role: "system" as const, content: diagramModeInstruction },
         ...enhancedMessages,
     ]
 
@@ -664,7 +792,11 @@ Call this tool to get shape names and usage syntax for a specific library.`,
                 }
 
                 // Base directory for shape library docs
-                const baseDir = path.join(process.cwd(), "shape-libraries")
+                const baseDir = path.join(
+                    process.cwd(),
+                    "docs",
+                    "shape-libraries",
+                )
 
                 const filePath = path.join(baseDir, `${sanitizedLibrary}.md`)
 

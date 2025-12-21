@@ -52,9 +52,9 @@ parameters: {
 
 ---Tool4---
 tool_name: get_shape_library
-description: Get shape/icon library documentation. Use this to discover avaliable icon shapes (AWS, GCP, Kubernetes, etc) before creating diagrams with cloud/tech icons.
+description: Get shape/icon library documentation. Use this to discover available icon shapes (AWS, GCP, Kubernetes, etc) before creating diagrams with cloud/tech icons.
 parameters: {
-  library_names: string // library name: aws4, gcp2, cisco19, flowchart, bpmn, etc.
+  library: string // library name: aws4, gcp2, cisco19, flowchart, bpmn, etc.
 }
 ---End of tools---
 

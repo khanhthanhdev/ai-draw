@@ -110,6 +110,56 @@ function OperationsDisplay({ operations }: { operations: DiagramOperation[] }) {
     )
 }
 
+// Search status data part from two-step workflow
+interface SearchStatusData {
+    status: "searching" | "complete" | "error"
+    groundingMetadata?: any
+}
+
+function SearchStatusIndicator({ data }: { data: SearchStatusData }) {
+    if (data.status === "searching") {
+        return (
+            <div className="my-3 rounded-none border border-border/60 bg-muted/30 overflow-hidden">
+                <div className="flex items-center gap-2 px-4 py-3 bg-muted/50">
+                    <Search className="w-4 h-4 text-primary animate-pulse" />
+                    <span className="text-sm font-medium text-foreground/80">
+                        Searching the web...
+                    </span>
+                    <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin ml-auto" />
+                </div>
+            </div>
+        )
+    }
+
+    if (data.status === "complete") {
+        return (
+            <div className="my-3 rounded-none border border-border/60 bg-muted/30 overflow-hidden">
+                <div className="flex items-center gap-2 px-4 py-3 bg-muted/50">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="text-sm font-medium text-foreground/80">
+                        Web search complete
+                    </span>
+                </div>
+            </div>
+        )
+    }
+
+    if (data.status === "error") {
+        return (
+            <div className="my-3 rounded-none border border-destructive/20 bg-destructive/10 overflow-hidden">
+                <div className="flex items-center gap-2 px-4 py-3">
+                    <Search className="w-4 h-4 text-destructive" />
+                    <span className="text-sm font-medium text-destructive">
+                        Web search failed
+                    </span>
+                </div>
+            </div>
+        )
+    }
+
+    return null
+}
+
 function GroundingDisplay({ metadata }: { metadata: any }) {
     if (!metadata || !metadata.google?.groundingMetadata) return null
 
@@ -699,6 +749,8 @@ export function ChatMessageDisplay({
                     return "Generate Diagram"
                 case "edit_diagram":
                     return "Edit Diagram"
+                case "append_diagram":
+                    return "Append to Diagram"
                 case "google_search":
                     return "Searching the web..."
                 case "get_shape_library":
@@ -772,30 +824,6 @@ export function ChatMessageDisplay({
                                 )
                             })()}
 
-                        {/* Show get_shape_library on success */}
-                        {output &&
-                            toolName === "get_shape_library" &&
-                            state === "output-available" &&
-                            isExpanded && (
-                                <div className="px-4 py-3 border-t border-border/40 bg-muted/20">
-                                    <div className="text-sm text-foreground/90">
-                                        Library loaded (
-                                        {typeof output === "string"
-                                            ? output.length
-                                            : 0}{" "}
-                                        {""} chars )
-                                    </div>
-                                    <pre className="text-xs bg-muted-50 p-2 rounded-md overflow-auto max-h-32 whitespace-pre-wrap">
-                                        {typeof output === "string"
-                                            ? output.substring(0, 1000) +
-                                              (output.length > 1000
-                                                  ? "..."
-                                                  : "")
-                                            : String(output)}
-                                    </pre>
-                                </div>
-                            )}
-
                         {input && Object.keys(input).length > 0 && (
                             <button
                                 type="button"
@@ -828,6 +856,25 @@ export function ChatMessageDisplay({
                         ) : null}
                     </div>
                 )}
+                {/* Show get_shape_library output on success */}
+                {output &&
+                    toolName === "get_shape_library" &&
+                    state === "output-available" &&
+                    isExpanded && (
+                        <div className="px-4 py-3 border-t border-border/40 bg-muted/20">
+                            <div className="text-sm text-foreground/90 mb-2">
+                                Library loaded (
+                                {typeof output === "string" ? output.length : 0}{" "}
+                                chars)
+                            </div>
+                            <pre className="text-xs bg-muted/50 p-2 rounded-md overflow-auto max-h-48 whitespace-pre-wrap">
+                                {typeof output === "string"
+                                    ? output.substring(0, 2000) +
+                                      (output.length > 2000 ? "..." : "")
+                                    : String(output)}
+                            </pre>
+                        </div>
+                    )}
                 {output &&
                     state === "output-error" &&
                     (() => {
@@ -983,6 +1030,26 @@ export function ChatMessageDisplay({
                                                                 }
                                                             </ReasoningContent>
                                                         </Reasoning>
+                                                    )
+                                                }
+                                                return null
+                                            },
+                                        )}
+                                    {/* Search status data parts - displayed for assistant messages with search */}
+                                    {message.role === "assistant" &&
+                                        message.parts?.map(
+                                            (part: any, partIndex: number) => {
+                                                if (
+                                                    part.type ===
+                                                    "data-search-status"
+                                                ) {
+                                                    return (
+                                                        <SearchStatusIndicator
+                                                            key={`${message.id}-search-${partIndex}`}
+                                                            data={
+                                                                part.data as SearchStatusData
+                                                            }
+                                                        />
                                                     )
                                                 }
                                                 return null
