@@ -11,7 +11,9 @@ import {
     stepCountIs,
     streamText,
 } from "ai"
+import fs from "fs/promises"
 import { jsonrepair } from "jsonrepair"
+import path from "path"
 import { z } from "zod"
 import { getAIModel, supportsPromptCaching } from "@/lib/ai-providers"
 import { findCachedResponse } from "@/lib/cached-responses"
@@ -631,6 +633,60 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
                         "Continuation XML fragment to append (NO wrapper tags)",
                     ),
             }),
+        },
+        get_shape_library: {
+            description: `Get draw.io shape/icon library documentation with style syntax and shape names.
+
+Available libraries:
+- Cloud: aws4, azure2, gcp2, alibaba_cloud, openstack, salesforce
+- Networking: cisco19, network, kubernetes, vvd, rack
+- Business: bpmn, lean_mapping
+- General: flowchart, basic, arrows2, infographic, sitemap
+- UI/Mockups: android
+- Enterprise: citrix, sap, mscae, atlassian
+- Engineering: fluidpower, electrical, pid, cabinets, floorplan
+- Icons: webicons
+
+Call this tool to get shape names and usage syntax for a specific library.`,
+            inputSchema: z.object({
+                library: z
+                    .string()
+                    .describe("Library name (e.g., aws4, kubernetes, gcp2)"),
+            }),
+            execute: async ({ library }: { library: string }) => {
+                // sanitize library name to prevent path traversal
+                const sanitizedLibrary = library
+                    .toLowerCase()
+                    .replace(/[^a-z0-9_-]/g, "")
+
+                if (sanitizedLibrary !== library.toLowerCase()) {
+                    return `Invalid library name "${library}". Use only letters, numbers, underscores, or hyphens.`
+                }
+
+                // Base directory for shape library docs
+                const baseDir = path.join(process.cwd(), "shape-libraries")
+
+                const filePath = path.join(baseDir, `${sanitizedLibrary}.md`)
+
+                const resolvedPath = path.resolve(filePath)
+                if (!resolvedPath.startsWith(baseDir)) {
+                    return `Invalid library name "${library}".`
+                }
+
+                try {
+                    const content = await fs.readFile(filePath, "utf-8")
+                    return content
+                } catch (error) {
+                    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+                        return `Library "${library}" not found. Available libraries include: aws4, azure2, gcp2, alibaba_cloud, openstack, salesforce, cisco19, network, kubernetes, vvd, rack, bpmn, lean_mapping, flowchart, basic, arrows2, infographic, sitemap, android, citrix, sap, mscae, atlassian, fluidpower, electrical, pid, cabinets, floorplan, webicons.`
+                    }
+                    console.error(
+                        `Error reading library file for "${library}":`,
+                        error,
+                    )
+                    return `An error occurred while retrieving the "${library}" library documentation.`
+                }
+            },
         },
     }
 

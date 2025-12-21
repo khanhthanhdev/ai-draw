@@ -701,6 +701,8 @@ export function ChatMessageDisplay({
                     return "Edit Diagram"
                 case "google_search":
                     return "Searching the web..."
+                case "get_shape_library":
+                    return "Get Shape Library"
                 default:
                     return name
             }
@@ -769,6 +771,31 @@ export function ChatMessageDisplay({
                                     </span>
                                 )
                             })()}
+
+                        {/* Show get_shape_library on success */}
+                        {output &&
+                            toolName === "get_shape_library" &&
+                            state === "output-available" &&
+                            isExpanded && (
+                                <div className="px-4 py-3 border-t border-border/40 bg-muted/20">
+                                    <div className="text-sm text-foreground/90">
+                                        Library loaded (
+                                        {typeof output === "string"
+                                            ? output.length
+                                            : 0}{" "}
+                                        {""} chars )
+                                    </div>
+                                    <pre className="text-xs bg-muted-50 p-2 rounded-md overflow-auto max-h-32 whitespace-pre-wrap">
+                                        {typeof output === "string"
+                                            ? output.substring(0, 1000) +
+                                              (output.length > 1000
+                                                  ? "..."
+                                                  : "")
+                                            : String(output)}
+                                    </pre>
+                                </div>
+                            )}
+
                         {input && Object.keys(input).length > 0 && (
                             <button
                                 type="button"
