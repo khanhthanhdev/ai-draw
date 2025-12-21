@@ -47,7 +47,7 @@ export function FeaturesSectionWithHoverEffects() {
             icon: <IconDatabase />,
         },
         {
-            title: "Mind Maps from Minutes",
+            title: "Mind Maps from Seconds",
             description: "Summarize transcripts into clean mind maps.",
             icon: <IconBrain />,
         },

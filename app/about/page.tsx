@@ -99,8 +99,7 @@ export default function About() {
                                 </p>
                             </div>
                             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
-                                Build diagrams the same way you describe
-                                systems.
+                                Build diagrams the same way you describe systems
                             </h1>
                             <p className="mt-4 text-base text-muted-foreground sm:text-lg">
                                 Turn plain language into precise draw.io
@@ -131,7 +130,7 @@ export default function About() {
                                         Draft speed
                                     </p>
                                     <p className="mt-2 text-2xl font-semibold">
-                                        Minutes
+                                        Seconds
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         from prompt to diagram
@@ -145,7 +144,7 @@ export default function About() {
                                         6+ models
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        bring your own key
+                                        from Google, OpenAI
                                     </p>
                                 </div>
                                 <div className="border border-border bg-chart-3/10 p-4">

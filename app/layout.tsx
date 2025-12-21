@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next"
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google"
 import { DiagramProvider } from "@/contexts/diagram-context"
 
+import { ConvexClientProvider } from "./ConvexClientProvider"
+
 import "driver.js/dist/driver.css"
 import "./globals.css"
 
@@ -116,7 +118,9 @@ export default function RootLayout({
             <body
                 className={`${plusJakarta.variable} ${jetbrainsMono.variable} antialiased`}
             >
-                <DiagramProvider>{children}</DiagramProvider>
+                <ConvexClientProvider>
+                    <DiagramProvider>{children}</DiagramProvider>
+                </ConvexClientProvider>
             </body>
             {process.env.NEXT_PUBLIC_GA_ID && (
                 <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />

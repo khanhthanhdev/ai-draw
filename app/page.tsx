@@ -10,6 +10,7 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { useDiagram } from "@/contexts/diagram-context"
+import { authClient } from "@/lib/auth-client"
 
 const drawioBaseUrl =
     process.env.NEXT_PUBLIC_DRAWIO_BASE_URL || "https://embed.diagrams.net"
@@ -84,6 +85,17 @@ export default function Home() {
         }
 
         setIsLoaded(true)
+    }, [])
+
+    // Auto-login as anonymous user if not authenticated
+    useEffect(() => {
+        const checkAuth = async () => {
+            const { data: session } = await authClient.getSession()
+            if (!session) {
+                await authClient.signIn.anonymous()
+            }
+        }
+        checkAuth()
     }, [])
 
     const handleDarkModeChange = async () => {

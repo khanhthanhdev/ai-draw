@@ -36,6 +36,7 @@ import { useEditorTour } from "@/components/editor-tour"
 import { ResetWarningModal } from "@/components/reset-warning-modal"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { Button } from "@/components/ui/button"
+import { UserMenu } from "@/components/user-menu"
 import { useDiagram } from "@/contexts/diagram-context"
 import { getAIConfig } from "@/lib/ai-config"
 import { findCachedResponse } from "@/lib/cached-responses"
@@ -1406,13 +1407,13 @@ Continue from EXACTLY where you stopped.`,
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 overflow-x-hidden">
                         <div className="flex items-center gap-2">
-                            <Image
+                            {/* <Image
                                 src="/favicon.ico"
                                 alt="StemFun"
                                 width={isMobile ? 24 : 28}
                                 height={isMobile ? 24 : 28}
                                 className="rounded flex-shrink-0"
-                            />
+                            /> */}
                             <h1
                                 className={`${isMobile ? "text-sm" : "text-base"} font-semibold tracking-tight whitespace-nowrap`}
                             >
@@ -1429,7 +1430,7 @@ Continue from EXACTLY where you stopped.`,
                                 About
                             </Link>
                         )}
-                        {!isMobile && (
+                        {/* {!isMobile && (
                             <Link
                                 href="/about"
                                 target="_blank"
@@ -1444,7 +1445,7 @@ Continue from EXACTLY where you stopped.`,
                                     <AlertTriangle className="h-4 w-4" />
                                 </ButtonWithTooltip>
                             </Link>
-                        )}
+                        )} */}
                     </div>
                     <div className="flex items-center gap-1 justify-end overflow-x-hidden">
                         <ButtonWithTooltip
@@ -1464,18 +1465,9 @@ Continue from EXACTLY where you stopped.`,
                                 </span>
                             )}
                         </ButtonWithTooltip>
-                        <div className="w-px h-5 bg-border mx-1" />
-                        <ButtonWithTooltip
-                            tooltipContent="Settings"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowSettingsDialog(true)}
-                            className="hover:bg-accent transition-colors"
-                        >
-                            <Settings
-                                className={`${isMobile ? "h-4 w-4" : "h-5 w-5"} text-foreground/70 hover:text-foreground transition-all`}
-                            />
-                        </ButtonWithTooltip>
+                        <UserMenu
+                            onOpenSettings={() => setShowSettingsDialog(true)}
+                        />
                         {!isMobile && (
                             <ButtonWithTooltip
                                 tooltipContent="Hide chat panel (Ctrl+B)"
