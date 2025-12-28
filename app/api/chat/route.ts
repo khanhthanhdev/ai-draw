@@ -13,7 +13,7 @@ import {
 } from "ai"
 import { jsonrepair } from "jsonrepair"
 import { z } from "zod"
-import { getAIModel, supportsPromptCaching } from "@/lib/ai-providers"
+import { getAIModel } from "@/lib/ai-providers"
 import { findCachedResponse } from "@/lib/cached-responses"
 import {
     getTelemetryConfig,
@@ -165,7 +165,11 @@ async function handleChatRequest(req: Request): Promise<Response> {
 
     // Get user IP for Langfuse tracking
     const forwardedFor = req.headers.get("x-forwarded-for")
-    const userId = forwardedFor?.split(",")[0]?.trim() || "anonymous"
+    const rawIp = forwardedFor?.split(",")[0]?.trim() || "anonymous"
+    const userId =
+        rawIp === "anonymous"
+            ? rawIp
+            : `user-${Buffer.from(rawIp).toString("base64url").slice(0, 8)}`
 
     // Validate sessionId for Langfuse (must be string, max 200 chars)
     const validSessionId =
@@ -174,9 +178,12 @@ async function handleChatRequest(req: Request): Promise<Response> {
             : undefined
 
     // Extract user input text for Langfuse trace
-    const lastMessage = messages[messages.length - 1]
+    const lastUserMessage = [...messages]
+        .reverse()
+        .find((msg: any) => msg.role === "user")
+    // Find the last USER message, not just the last message (which could be assistant in multi-step tool flows)
     const userInputText =
-        lastMessage?.parts?.find((p: any) => p.type === "text")?.text || ""
+        lastUserMessage?.parts?.find((p: any) => p.type === "text")?.text || ""
 
     // Update Langfuse trace with input, session, and user
     setTraceInput({
@@ -224,18 +231,12 @@ async function handleChatRequest(req: Request): Promise<Response> {
     const { model, providerOptions, headers, modelId } =
         getAIModel(clientOverrides)
 
-    // Check if model supports prompt caching
-    const shouldCache = supportsPromptCaching(modelId)
-    console.log(
-        `[Prompt Caching] ${shouldCache ? "ENABLED" : "DISABLED"} for model: ${modelId}`,
-    )
-
     // Get the appropriate system prompt based on model (extended for Opus/Haiku 4.5)
     const systemMessage = getSystemPrompt(modelId, minimalStyle)
 
-    // Extract file parts (images) from the last message
+    // Extract file parts (images) from the last user message
     const fileParts =
-        lastMessage.parts?.filter((part: any) => part.type === "file") || []
+        lastUserMessage.parts?.filter((part: any) => part.type === "file") || []
 
     // User input only - XML is now in a separate cached system message
     const formattedUserInput = `User input:
@@ -244,7 +245,7 @@ ${userInputText}
 """`
 
     // Convert UIMessages to ModelMessages and add system message
-    const modelMessages = convertToModelMessages(messages)
+    const modelMessages = await convertToModelMessages(messages)
 
     // DEBUG: Log incoming messages structure
     console.log("[route.ts] Incoming messages count:", messages.length)
@@ -373,49 +374,15 @@ ${userInputText}
         }
     }
 
-    // Add cache point to the last assistant message in conversation history
-    // This caches the entire conversation prefix for subsequent requests
-    // Strategy: system (cached) + history with last assistant (cached) + new user message
-    if (shouldCache && enhancedMessages.length >= 2) {
-        // Find the last assistant message (should be second-to-last, before current user message)
-        for (let i = enhancedMessages.length - 2; i >= 0; i--) {
-            if (enhancedMessages[i].role === "assistant") {
-                enhancedMessages[i] = {
-                    ...enhancedMessages[i],
-                    providerOptions: {
-                        bedrock: { cachePoint: { type: "default" } },
-                    },
-                }
-                break // Only cache the last assistant message
-            }
-        }
-    }
-
-    // System messages with multiple cache breakpoints for optimal caching:
-    // - Breakpoint 1: Static instructions (~1500 tokens) - rarely changes
-    // - Breakpoint 2: Current XML context - changes per diagram, but constant within a conversation turn
-    // This allows: if only user message changes, both system caches are reused
-    //              if XML changes, instruction cache is still reused
+    // System messages with static instructions and current diagram context
     const systemMessages = [
-        // Cache breakpoint 1: Instructions (rarely change)
         {
             role: "system" as const,
             content: systemMessage,
-            ...(shouldCache && {
-                providerOptions: {
-                    bedrock: { cachePoint: { type: "default" } },
-                },
-            }),
         },
-        // Cache breakpoint 2: Previous and Current diagram XML context
         {
             role: "system" as const,
             content: `${previousXml ? `Previous diagram XML (before user's last message):\n"""xml\n${previousXml}\n"""\n\n` : ""}Current diagram XML (AUTHORITATIVE - the source of truth):\n"""xml\n${xml || ""}\n"""\n\nIMPORTANT: The "Current diagram XML" is the SINGLE SOURCE OF TRUTH for what's on the canvas right now. The user can manually add, delete, or modify shapes directly in draw.io. Always count and describe elements based on the CURRENT XML, not on what you previously generated. If both previous and current XML are shown, compare them to understand what the user changed. When using edit_diagram, COPY search patterns exactly from the CURRENT XML - attribute order matters!`,
-            ...(shouldCache && {
-                providerOptions: {
-                    bedrock: { cachePoint: { type: "default" } },
-                },
-            }),
         },
     ]
     // Google Search Grounding Conflict Resolution:
@@ -710,13 +677,8 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
             sessionId: validSessionId,
             userId: userId,
         }),
-        onFinish: ({ text, usage }) => {
-            const anyUsage = usage as any
-            setTraceOutput(text, {
-                promptTokens: anyUsage.promptTokens ?? anyUsage.inputTokens,
-                completionTokens:
-                    anyUsage.completionTokens ?? anyUsage.outputTokens,
-            })
+        onFinish: ({ text }) => {
+            setTraceOutput(text)
         },
     })
 
@@ -725,16 +687,6 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
         messageMetadata: ({ part }) => {
             if (part.type === "finish") {
                 const usage = (part as any).totalUsage
-                if (!usage) {
-                    console.warn(
-                        "[messageMetadata] No usage data in finish part",
-                    )
-                    return undefined
-                }
-                // Total input = non-cached + cached (these are separate counts)
-                // Note: cacheWriteInputTokens is not available on finish part
-                const totalInputTokens =
-                    (usage.inputTokens ?? 0) + (usage.cachedInputTokens ?? 0)
 
                 // Pass provider metadata (including Google search grounding) to client
                 // Note: providerMetadata is available in the finish part from streamText
@@ -742,8 +694,7 @@ Example: If previous output ended with '<mxCell id="x" style="rounded=1', contin
                     .providerMetadata as ProviderMetadata
 
                 return {
-                    inputTokens: totalInputTokens,
-                    outputTokens: usage.outputTokens ?? 0,
+                    totalTokens: usage.totalTokens,
                     finishReason: (part as any).finishReason,
                     providerMetadata,
                 }

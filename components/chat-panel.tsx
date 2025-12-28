@@ -3,15 +3,12 @@
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import {
-    AlertTriangle,
     Check,
     MessageSquarePlus,
     PanelRightClose,
     PanelRightOpen,
     Search,
-    Settings,
 } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -672,19 +669,15 @@ Continue from EXACTLY where you stopped.`,
             console.log("[onFinish] finishReason:", metadata?.finishReason)
             console.log("[onFinish] metadata:", metadata)
 
-            if (metadata) {
-                // Use Number.isFinite to guard against NaN (typeof NaN === 'number' is true)
-                const inputTokens = Number.isFinite(metadata.inputTokens)
-                    ? (metadata.inputTokens as number)
+            // AI SDK 6 provide totalTokens directly
+            const totalTokens =
+                metadata && Number.isFinite(metadata.totalTokens)
+                    ? (metadata.totalTokens as number)
                     : 0
-                const outputTokens = Number.isFinite(metadata.outputTokens)
-                    ? (metadata.outputTokens as number)
-                    : 0
-                const actualTokens = inputTokens + outputTokens
-                if (actualTokens > 0) {
-                    quotaManager.incrementTokenCount(actualTokens)
-                    quotaManager.incrementTPMCount(actualTokens)
-                }
+
+            if (totalTokens > 0) {
+                quotaManager.incrementTokenCount(totalTokens)
+                quotaManager.incrementTPMCount(totalTokens)
             }
         },
         sendAutomaticallyWhen: ({ messages }) => {

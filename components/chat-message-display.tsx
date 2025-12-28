@@ -31,6 +31,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import {
     applyDiagramOperations,
     convertToLegalXml,
+    extractCompleteMxCells,
     isMxCellXmlComplete,
     replaceNodes,
     validateAndFixXml,
@@ -379,12 +380,27 @@ export function ChatMessageDisplay({
 
     const handleDisplayChart = useCallback(
         (xml: string, showToast = false) => {
-            const currentXml = xml || ""
+            let currentXml = xml || ""
+            const startTime = performance.now()
+
+            // During streaming (showToast=false), extract only complete mxCell elements
+            // This allows progressive rendering even with partial/incomplete trailing XML
+            if (!showToast) {
+                const completeCells = extractCompleteMxCells(currentXml)
+                if (!completeCells) {
+                    return
+                }
+                currentXml = completeCells
+            }
             const convertedXml = convertToLegalXml(currentXml)
             if (convertedXml !== previousXML.current) {
                 // Parse and validate XML BEFORE calling replaceNodes
                 const parser = new DOMParser()
-                const testDoc = parser.parseFromString(convertedXml, "text/xml")
+                // Wrap in root element for parsing multiple mxCell elements
+                const testDoc = parser.parseFromString(
+                    `<root>${convertedXml}</root>`,
+                    "text/xml",
+                )
                 const parseError = testDoc.querySelector("parsererror")
 
                 if (parseError) {
@@ -411,7 +427,22 @@ export function ChatMessageDisplay({
                         `<mxfile><diagram name="Page-1" id="page-1"><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>`
                     const replacedXML = replaceNodes(baseXML, convertedXml)
 
-                    // Validate and auto-fix the XML
+                    const xmlProcessTime = performance.now() - startTime
+
+                    // During streaming (showToast=false), skip heavy validation for lower latency
+                    // The quick DOM parse check above catches malformed XML
+                    // Full validation runs on final output (showToast=true)
+                    if (!showToast) {
+                        previousXML.current = convertedXml
+                        const loadStartTime = performance.now()
+                        onDisplayChart(replacedXML, true)
+                        console.log(
+                            `[Streaming] XML processing: ${xmlProcessTime.toFixed(1)}ms, drawio load: ${(performance.now() - loadStartTime).toFixed(1)}ms`,
+                        )
+                        return
+                    }
+
+                    // Final output: run full validation and auto-fix
                     const validation = validateAndFixXml(replacedXML)
                     if (validation.valid) {
                         previousXML.current = convertedXml
@@ -424,7 +455,11 @@ export function ChatMessageDisplay({
                             )
                         }
                         // Skip validation in loadDiagram since we already validated above
+                        const loadStartTime = performance.now()
                         onDisplayChart(xmlToLoad, true)
+                        console.log(
+                            `[Final] XML processing: ${xmlProcessTime.toFixed(1)}ms, validation+load: ${(performance.now() - loadStartTime).toFixed(1)}ms`,
+                        )
                     } else {
                         console.error(
                             "[ChatMessageDisplay] XML validation failed:",
@@ -442,12 +477,9 @@ export function ChatMessageDisplay({
                         "[ChatMessageDisplay] Error processing XML:",
                         error,
                     )
-                    // Only show toast if this is the final XML (not during streaming)
-                    if (showToast) {
-                        toast.error(
-                            "Failed to process diagram. Please try regenerating.",
-                        )
-                    }
+                    toast.error(
+                        "Diagram validation failed. Please try regenerating.",
+                    )
                 }
             }
         },
@@ -667,17 +699,10 @@ export function ChatMessageDisplay({
             }
         })
 
-        // Cleanup: clear any pending debounce timeout on unmount
-        return () => {
-            if (debounceTimeoutRef.current) {
-                clearTimeout(debounceTimeoutRef.current)
-                debounceTimeoutRef.current = null
-            }
-            if (editDebounceTimeoutRef.current) {
-                clearTimeout(editDebounceTimeoutRef.current)
-                editDebounceTimeoutRef.current = null
-            }
-        }
+        // NOTE: Don't cleanup debounce timeouts here!
+        // The cleanup runs on every re-render (when messages changes),
+        // which would cancel the timeout before it fires.
+        // Let the timeouts complete naturally - they're harmless if component unmounts.
     }, [messages, handleDisplayChart, chartXML])
 
     const renderToolPart = (part: ToolPartLike) => {
